@@ -1,0 +1,27 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+*.swp
+*.swo
+*.orig
+
+# Logs
+*.log
+*.tmp
+
+# Node (if any tooling scripts added later)
+node_modules/
+dist/
+
+# Python
+__pycache__/
+*.pyc
+
+# Secrets — never commit credentials
+*.env
+.env.*
+secrets/
