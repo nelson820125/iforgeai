@@ -53,12 +53,15 @@ Trigger: QA has approved and `qa-report-{version}.md` exists.
 4. `.ai/temp/db-design.md` — database schema, security requirements, data sensitivity classification
 5. `.ai/temp/db-init.sql` — if `db_approach: database-first`, reference for database provisioning steps
 6. `.ai/context/architect_constraint.md` — locked dependencies, deployment constraints, prohibited components
+7. `.ai/context/workflow-config.md` — read `docker` and `cicd` blocks to determine whether Sections 8 and 9 apply
 
 ## Output
 
 Write to: `.ai/reports/devops-engineer/deploy-guide-{version}.md`
 
-The deploy guide must contain the following seven sections:
+The deploy guide must contain the following sections (Sections 8 and 9 are conditional — only include when enabled in `workflow-config.md`):
+
+> **Default / backward-compatible mode:** If the `docker` or `cicd` blocks are absent from `workflow-config.md` (e.g. the project was initialised before this feature was added), treat them as `enabled: no`. Produce only Sections 1–7 (manual deployment guide). Do **not** ask the user to re-run the init prompt — simply proceed with the manual deployment guide.
 
 ---
 
@@ -175,6 +178,77 @@ What to do if deployment fails or critical issues are detected post-deployment.
 
 ---
 
+### Section 8: Docker Configuration
+
+> Include this section only if `docker.enabled: yes` in `workflow-config.md`. Otherwise omit entirely.
+
+Write the following Docker artifacts. Each file must be saved alongside the deploy guide.
+
+**8.1 — Dockerfile**
+
+Write to: `.ai/reports/devops-engineer/Dockerfile`
+
+Requirements:
+- Use the `base_image` specified in `workflow-config.md`; if blank, propose a suitable official image based on `architect.md` tech stack
+- Multi-stage build where applicable (build stage + runtime stage) to minimise image size
+- Run application as a **non-root user** — create a dedicated app user and switch to it before `ENTRYPOINT`
+- Set `WORKDIR`, `COPY`, dependency install, and `ENTRYPOINT` / `CMD` in logical order
+- Do not bake secrets or environment variable **values** into the image — use `ENV KEY=""` declarations only; runtime values injected at container start
+- Add a `HEALTHCHECK` instruction using the application’s health endpoint if one exists in `api-contract.md`
+
+**8.2 — Docker Compose (local development)**
+
+Write to: `.ai/reports/devops-engineer/docker-compose.yml`
+
+include only if `docker.compose: yes` in `workflow-config.md`.
+
+Requirements:
+- Define one service per deployable component identified in `architect.md`
+- Mount source code as a volume for hot-reload during development
+- Declare all environment variables listed in Section 4 as `environment:` keys with empty or placeholder values (`""`)
+- Expose only the ports required for local development
+- Add `depends_on` and `healthcheck` where applicable
+- Include a separate `docker-compose.override.yml` stub with a comment explaining how to add local overrides
+
+**8.3 — Registry Push Instructions**
+
+Document in the deploy guide (inline, not a separate file) the exact commands to tag and push images to the registry specified in `docker.registry`. Use `{IMAGE_TAG}` and `{REGISTRY_URL}` as placeholders.
+
+---
+
+### Section 9: CI/CD Pipeline
+
+> Include this section only if `cicd.enabled: yes` in `workflow-config.md`. Otherwise omit entirely.
+
+Write the CI/CD pipeline configuration file appropriate for the platform specified in `cicd.platform`:
+
+| Platform | Output file |
+|---|---|
+| `GitHub Actions` | `.ai/reports/devops-engineer/ci-cd.yml` *(GitHub Actions workflow)* |
+| `GitLab CI` | `.ai/reports/devops-engineer/.gitlab-ci.yml` |
+| `Azure DevOps` | `.ai/reports/devops-engineer/azure-pipelines.yml` |
+| `Jenkins` | `.ai/reports/devops-engineer/Jenkinsfile` |
+
+**Pipeline must include the stages selected in `cicd.stages`:**
+
+| Stage key | What to produce |
+|---|---|
+| `lint` | Run linter / code-style check appropriate for the tech stack |
+| `build` | Compile / transpile the application |
+| `test` | Run unit and integration tests; fail the pipeline on test failure |
+| `docker-build` | Build and tag the Docker image; only include if `docker.enabled: yes` |
+| `deploy-staging` | Deploy to the staging environment specified in `cicd.deploy_target`; include smoke test step |
+| `deploy-production` | Deploy to production; require manual approval gate unless `auto_deploy_on_main: yes` |
+
+**Requirements for all pipelines:**
+- Secrets and credentials must be injected via the platform’s secret store (e.g. GitHub Secrets, Azure Key Vault variable groups) — never hardcoded
+- Cache dependency directories (e.g. `node_modules`, NuGet packages) to speed up builds
+- Produce a build artefact or Docker image tag that is traceable to the commit SHA
+- If `auto_deploy_on_main: yes`, trigger `deploy-production` automatically on merge to the default branch; otherwise add a manual approval step
+- Add status badge markdown snippet (for the `README.md`) as a comment at the top of the pipeline file
+
+---
+
 ## Constraints
 
 **Must follow:**
@@ -182,11 +256,14 @@ What to do if deployment fails or critical issues are detected post-deployment.
 - All items in the Procurement Plan must trace back to a component or dependency in `architect.md`
 - All third-party integrations must correspond to service references in `api-contract.md`
 - Deployment steps must be written for human execution — no assumption of automation tooling unless specified in `architect_constraint.md`
+- Sections 8 and 9 are **conditional** — only produce them when the corresponding `docker.enabled` / `cicd.enabled` flag is `yes` in `workflow-config.md`
+- Docker images must always run as a non-root user; never bake secrets into image layers
+- CI/CD pipeline secrets must always use the platform’s secret store — never hardcode credentials in pipeline files
 
 **Must never:**
 - Include real credentials, passwords, connection strings, IP addresses, or private keys in any output
 - Recommend specific cloud vendors unless `architect_constraint.md` already specifies them
-- Write CI/CD pipeline code, Dockerfiles, or infrastructure-as-code unless explicitly requested by the user
+- Produce Docker or CI/CD artifacts when `docker.enabled` / `cicd.enabled` is `no` or absent, unless the user explicitly requests them
 - Make assumptions about deployment environments that contradict `architect_constraint.md`
 - Expand scope into architecture changes, code changes, or QA re-runs
 

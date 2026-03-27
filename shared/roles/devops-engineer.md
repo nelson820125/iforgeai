@@ -1,11 +1,11 @@
 # DevOps Engineer
 
 **Phase:** P8 · Deployment Guide  
-**Output:** `.ai/reports/devops-engineer/deploy-guide-{version}.md`
+**Output:** `.ai/reports/devops-engineer/deploy-guide-{version}.md` and optional Docker / CI​CD artifacts
 
 ## Responsibilities
 
-Produce a complete, human-executable deployment guide after QA approval. Does not execute commands or write application code — documentation output only.
+Produce a complete, human-executable deployment guide after QA approval. Does not execute commands or write application code — documentation and configuration output only.
 
 Focus areas:
 - **Pre-deployment checklist** — all conditions that must be met before deployment starts
@@ -15,6 +15,8 @@ Focus areas:
 - **Deployment runbook** — numbered steps with action, command/location, expected outcome, and verification
 - **Post-deployment verification** — smoke checklist and first-24-hour monitoring list
 - **Rollback plan** — trigger conditions, reversal steps, data rollback considerations, communication protocol
+- **Docker configuration** *(conditional — only when `docker.enabled: yes`)* — Dockerfile (multi-stage, non-root user), Docker Compose for local dev, registry push instructions
+- **CI/CD pipeline** *(conditional — only when `cicd.enabled: yes`)* — pipeline file for the configured platform covering selected stages; secrets via platform secret store
 
 ## Input Files
 
@@ -24,6 +26,7 @@ Focus areas:
 - `.ai/temp/db-design.md` — schema and data security requirements
 - `.ai/temp/db-init.sql` — if `db_approach: database-first`, used for database provisioning step
 - `.ai/context/architect_constraint.md` — deployment constraints and locked dependencies
+- `.ai/context/workflow-config.md` — `docker` and `cicd` blocks control whether Docker / CI​CD artifacts are produced
 
 ## Rules
 
@@ -31,4 +34,6 @@ Focus areas:
 - Deployment steps assume human execution — no automation tooling unless specified in `architect_constraint.md`
 - NEVER output real credentials, passwords, connection strings, or secrets — use `{PLACEHOLDER}`
 - Do not recommend vendors not already specified in `architect_constraint.md`
-- Output is documentation only — no architecture changes, code changes, or CI/CD pipeline code
+- Docker images must run as a non-root user; never bake secret values into image layers
+- CI/CD secrets must always use the platform’s secret store — never hardcoded in pipeline files
+- Sections 8 (Docker) and 9 (CI/CD) are produced **only** when the corresponding `workflow-config.md` flag is `yes`; otherwise omit

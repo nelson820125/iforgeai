@@ -106,6 +106,43 @@ Ask only if the project type includes a frontend (i.e. not `backend-only` or `ap
 >
 > Enter a number [Enter = 1]:
 
+### Group F — Delivery mode
+
+> **Q9.** What delivery mode will this project use?
+>
+> | # | Option | Description |
+> |---|---|---|
+> | 1 | `standard` *(default)* | Single flat output path. Best for small teams or non-sprint projects. |
+> | 2 | `scrum` | Output versioned per sprint. Best for iterative Scrum projects. |
+>
+> Enter a number [Enter = 1]:
+
+If `scrum` is selected:
+
+> **Q10.** What is the initial version and sprint name?
+> *(e.g. version: `v1.0`, sprint: `sprint-1`)*
+
+### Group G — DevOps / Container / CI
+
+> **Q11.** Will this project use Docker for containerisation?
+> Options: `yes` / `no` *(default: no)*
+
+If `yes` is selected:
+
+> - What is the base image strategy? *(e.g. `mcr.microsoft.com/dotnet/aspnet:9.0` / `node:22-alpine` / leave blank to decide later)*
+> - Will Docker Compose be used for local development? `yes` / `no` *(default: yes)*
+> - Target registry? *(e.g. `Docker Hub` / `GitHub Container Registry` / `Azure Container Registry` / leave blank)*
+
+> **Q12.** Will this project set up a CI/CD pipeline?
+> Options: `yes` / `no` *(default: no)*
+
+If `yes` is selected:
+
+> - Which CI/CD platform? *(e.g. `GitHub Actions` / `GitLab CI` / `Azure DevOps` / `Jenkins`)*
+> - Pipeline stages to include? *(Select all that apply: `lint` / `build` / `test` / `docker-build` / `deploy-staging` / `deploy-production`)*
+> - Target deployment environment? *(e.g. `Azure App Service` / `Kubernetes` / `VPS` / leave blank)*
+> - Automatic deployment on merge to main branch? `yes` / `no` *(default: yes)*
+
 ---
 
 ## Step 3: Write `.ai/context/workflow-config.md`
@@ -171,6 +208,19 @@ backend:
 
 deploy:
   platform: "{answer or empty string}"
+
+docker:
+  enabled: "{yes | no}"                          # answer to Q11
+  base_image: "{base image or empty string}"
+  compose: "{yes | no}"
+  registry: "{registry or empty string}"
+
+cicd:
+  enabled: "{yes | no}"                          # answer to Q12
+  platform: "{platform or empty string}"
+  stages: "{comma-separated stages or empty string}"
+  deploy_target: "{target or empty string}"
+  auto_deploy_on_main: "{yes | no}"
 ```
 
 ## Current Iteration Goal

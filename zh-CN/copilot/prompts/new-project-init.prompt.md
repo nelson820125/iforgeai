@@ -105,6 +105,43 @@ agent: "agent"
 >
 > 请输入数字选择 [Enter = 1]:
 
+### F 组 — 交付模式
+
+> **Q9.** 本项目使用哪种交付模式？
+>
+> | # | 选项 | 说明 |
+> |---|---|---|
+> | 1 | `standard`（默认） | 单一扁平输出路径。适合小团队或非迭代项目。 |
+> | 2 | `scrum` | 按 Sprint 版本化输出。适合迭代式 Scrum 项目。 |
+>
+> 请输入数字选择 [Enter = 1]：
+
+若选择 `scrum`：
+
+> **Q10.** 初始版本号和 Sprint 名称是什么？
+> *（例如 版本：`v1.0`，Sprint：`sprint-1`）*
+
+### G 组 — DevOps / 容器 / CI
+
+> **Q11.** 本项目是否使用 Docker 进行容器化？
+> 可选：`是` / `否`（默认：否）
+
+若选择 `是`：
+
+> - 基础镜像策略？*（例如 `mcr.microsoft.com/dotnet/aspnet:9.0` / `node:22-alpine` / 留空待定）*
+> - 是否使用 Docker Compose 进行本地开发？`是` / `否`（默认：是）
+> - 目标镜像仓库？*（例如 `Docker Hub` / `GitHub Container Registry` / `Azure Container Registry` / 留空）*
+
+> **Q12.** 本项目是否配置 CI/CD 流水线？
+> 可选：`是` / `否`（默认：否）
+
+若选择 `是`：
+
+> - 使用哪个 CI/CD 平台？*（例如 `GitHub Actions` / `GitLab CI` / `Azure DevOps` / `Jenkins`）*
+> - 需要包含哪些流水线阶段？*（多选：`代码检查` / `构建` / `测试` / `docker-build` / `部署到测试环境` / `部署到生产环境`）*
+> - 目标部署环境？*（例如 `Azure App Service` / `Kubernetes` / `VPS` / 留空）*
+> - 合并到主分支时自动部署？`是` / `否`（默认：是）
+
 ---
 
 ## 步骤 3：写入 `.ai/context/workflow-config.md`
@@ -168,6 +205,19 @@ backend:
 
 deploy:
   platform: "{答案或空字符串}"
+
+docker:
+  enabled: "{是 | 否}"                          # Q11 答案
+  base_image: "{基础镜像或空字符串}"
+  compose: "{是 | 否}"
+  registry: "{镜像仓库或空字符串}"
+
+cicd:
+  enabled: "{是 | 否}"                          # Q12 答案
+  platform: "{平台名称或空字符串}"
+  stages: "{逗号分隔的阶段列表或空字符串}"
+  deploy_target: "{目标环境或空字符串}"
+  auto_deploy_on_main: "{是 | 否}"
 ```
 
 ## 本迭代目标

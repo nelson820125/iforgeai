@@ -1,4 +1,4 @@
----
+﻿---
 name: devops-engineer
 description: DevOps 工程师角色技能。当需要输出部署指南、定义发布操作手册、制定基础设施采购计划或编写三方服务集成要求文档时使用。关键词：部署、发布指南、基础设施、采购、操作手册、清单、三方集成、环境配置、回滚方案。
 ---
@@ -53,12 +53,15 @@ description: DevOps 工程师角色技能。当需要输出部署指南、定义
 4. `.ai/temp/db-design.md` — 数据库 Schema、安全要求、数据敏感级别
 5. `.ai/temp/db-init.sql` — 若 `db_approach: database-first`，用于数据库置备步骤的参考
 6. `.ai/context/architect_constraint.md` — 锁定的依赖、部署约束、禁止使用的组件
+7. `.ai/context/workflow-config.md` — 读取 `docker` 和 `cicd` 字段，以确定第 8 节和第 9 节是否适用
 
 ## 产出
 
 写入：`.ai/reports/devops-engineer/deploy-guide-{version}.md`
 
-部署指南须包含以下七个章节：
+部署指南须包含以下章节（第八章和第九章为条件包含——仅当 `workflow-config.md` 中对应开关开启时才出现）：
+
+> **默认 / 向后兼容模式：** 若 `workflow-config.md` 中缺少 `docker` 或 `cicd` 字段（例如项目在此功能上线前初始化），视同 `enabled: no` 处理。**仅产出第一章至第七章（人工部署指南）**。无需要求用户重跟初始化流程——直接继续产出人工部署指南即可。
 
 ---
 
@@ -175,6 +178,77 @@ description: DevOps 工程师角色技能。当需要输出部署指南、定义
 
 ---
 
+### 第八章：Docker 配置
+
+> 仅当 `workflow-config.md` 中 `docker.enabled: yes` 时包含本章。否则完全略去。
+
+写入以下 Docker 产出物，每个文件将与部署指南一并保存。
+
+**8.1 — Dockerfile**
+
+写入：`.ai/reports/devops-engineer/Dockerfile`
+
+要求：
+- 使用 `workflow-config.md` 中指定的 `base_image`；若留空，根据 `architect.md` 技术栈提选合适的官方镜像
+- 应用多阶段构建（构建阶段 + 运行阶段）以最小化镜像体积
+- **以非 root 用户运行应用**——创建专用应用用户，并在 `ENTRYPOINT` 前切换
+- 按逻辑顺序设置 `WORKDIR`、`COPY`、依赖安装和 `ENTRYPOINT` / `CMD`
+- 禁止将密钥或环境变量**值**内置入镜像——仅用 `ENV KEY=""`  声明，运行时值在容器启动时注入
+- 若 `api-contract.md` 中存在应用健康检查接口，添加 `HEALTHCHECK` 指令
+
+**8.2 — Docker Compose（本地开发）**
+
+写入：`.ai/reports/devops-engineer/docker-compose.yml`
+
+仅当 `docker.compose: yes` 时包含。
+
+要求：
+- 为 `architect.md` 中识别的每个可部署组件定义一个 Service
+- 通过卷挂载源代码以支持开发时热重载
+- 将第四章中所有环境变量应用空字符串或占位值 (`""`) 在 `environment:` 下声明
+- 仅暴露本地开发所需的端口
+- 适当添加 `depends_on` 和 `healthcheck`
+- 包含一个 `docker-compose.override.yml` 骨架文件，并附注释说明如何添加本地覆盖配置
+
+**8.3 — 镜像仓库推送说明**
+
+在部署指南中（内联，不单独建文件）写明向 `docker.registry` 指定仓库打标签和推送镜像的确切命令，使用 `{IMAGE_TAG}` 和 `{REGISTRY_URL}` 作为占位符。
+
+---
+
+### 第九章：CI/CD 流水线
+
+> 仅当 `workflow-config.md` 中 `cicd.enabled: yes` 时包含本章。否则完全略去。
+
+根据 `cicd.platform` 指定的平台写入对应的流水线配置文件：
+
+| 平台 | 输出文件 |
+|---|---|
+| `GitHub Actions` | `.ai/reports/devops-engineer/ci-cd.yml`（GitHub Actions workflow） |
+| `GitLab CI` | `.ai/reports/devops-engineer/.gitlab-ci.yml` |
+| `Azure DevOps` | `.ai/reports/devops-engineer/azure-pipelines.yml` |
+| `Jenkins` | `.ai/reports/devops-engineer/Jenkinsfile` |
+
+**流水线必须包含 `cicd.stages` 中选定的阶段：**
+
+| 阶段键 | 产出内容 |
+|---|---|
+| `代码检查` | 执行适合技术栈的代码检查 / 风格检查 |
+| `构建` | 编译 / 转译应用 |
+| `测试` | 执行单元测试和集成测试；测试失败时流水线失败 |
+| `docker-build` | 构建并打标签 Docker 镜像；仅当 `docker.enabled: yes` 时包含 |
+| `部署到测试环境` | 部署到 `cicd.deploy_target` 指定的测试环境；包含冒烟测试步骤 |
+| `部署到生产环境` | 部署到生产环境；除非 `auto_deploy_on_main: yes`，否则需要手动审批闸 |
+
+**所有流水线的通用要求：**
+- 密钥和凭证必须通过平台密钥库注入（如 GitHub Secrets、Azure Key Vault 变量组）——禁止硬编码
+- 缓存依赖目录（如 `node_modules`、NuGet 包）以加速构建
+- 产出可追溯至提交 SHA 的构建产物或 Docker 镜像标签
+- 若 `auto_deploy_on_main: yes`，在合并到默认分支时自动触发 `部署到生产环境`；否则添加手动审批步骤
+- 在流水线文件顶部以注释形式附上状态徽章 Markdown 代码片段（用于 `README.md`）
+
+---
+
 ## 约束
 
 **必须遵守：**
@@ -182,11 +256,14 @@ description: DevOps 工程师角色技能。当需要输出部署指南、定义
 - 采购计划中的每条项目须可追溯至 `architect.md` 中的组件或依赖
 - 所有三方集成须对应 `api-contract.md` 中的服务引用
 - 部署步骤须假设人工执行——除非 `architect_constraint.md` 已指定自动化工具
+- 第 8 节和第 9 节为**条件处理**——仅当 `workflow-config.md` 中对应的 `docker.enabled` / `cicd.enabled` 标志为 `yes` 时才产出
+- Docker 镜像必须以非 root 用户运行；禁止将密钥值内置入镜像层
+- CI/CD 流水线密钥必须通过平台密钥库注入——禁止硬编码在流水线文件中
 
 **禁止：**
 - 在任何产出中包含真实凭证、密码、连接字符串、IP 地址或私钥
 - 推荐 `architect_constraint.md` 中未指定的云厂商或服务商
-- 编写 CI/CD 流水线代码、Dockerfile 或基础设施即代码（除非用户明确要求）
+- 当 `docker.enabled` / `cicd.enabled` 为 `no` 或缺少时，产出 Docker 或 CI/CD 产出物（除非用户明确请求）
 - 做出与 `architect_constraint.md` 矛盾的部署环境假设
 - 将工作范围扩展至架构变更、代码变更或 QA 重新测试
 

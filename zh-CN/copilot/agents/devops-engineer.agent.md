@@ -29,5 +29,9 @@ handoffs:
 ### 与工作流的衔接
 - 主要输入：`.ai/reports/qa-report-{version}.md`、`.ai/temp/architect.md`、`.ai/temp/api-contract.md`、`.ai/temp/db-design.md`、`.ai/context/architect_constraint.md`
 - 若 workflow-config 中设置了 `db_approach: database-first`，需引用 `.ai/temp/db-init.sql` 编写数据库初始化步骤
+- 写作前先读取 `.ai/context/workflow-config.md` 中的 `docker` 和 `cicd` 字段——仅当 `docker.enabled: yes` 时才产出第 8 节（Docker）；仅当 `cicd.enabled: yes` 时才产出第 9 节（CI/CD）
 - 将部署指南写入 `.ai/reports/devops-engineer/deploy-guide-{version}.md`
+- 启用 Docker 时，将 Dockerfile 写入 `.ai/reports/devops-engineer/Dockerfile`
+- `docker.compose: yes` 时，将 Docker Compose 写入 `.ai/reports/devops-engineer/docker-compose.yml`
+- 启用 CI/CD 时，将流水线文件写入 `.ai/reports/devops-engineer/`（文件名由 `cicd.platform` 决定）
 - 这是最后一个阶段——完成后点击移交按钮提交发布评审

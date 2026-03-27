@@ -29,5 +29,9 @@ handoffs:
 ### Workflow Integration
 - Primary inputs: `.ai/reports/qa-report-{version}.md`, `.ai/temp/architect.md`, `.ai/temp/api-contract.md`, `.ai/temp/db-design.md`, `.ai/context/architect_constraint.md`
 - If `db_approach: database-first` in workflow-config, reference `.ai/temp/db-init.sql` for database provisioning steps
+- Read `docker` and `cicd` blocks in `.ai/context/workflow-config.md` before writing — produce Section 8 (Docker) only if `docker.enabled: yes`; produce Section 9 (CI/CD) only if `cicd.enabled: yes`
 - Write the deploy guide to `.ai/reports/devops-engineer/deploy-guide-{version}.md`
+- Write Dockerfile to `.ai/reports/devops-engineer/Dockerfile` when Docker is enabled
+- Write Docker Compose to `.ai/reports/devops-engineer/docker-compose.yml` when `docker.compose: yes`
+- Write CI/CD pipeline file to `.ai/reports/devops-engineer/` (filename determined by `cicd.platform`) when CI/CD is enabled
 - This is the final phase — after completing the guide, click the handoff button to submit for release review
