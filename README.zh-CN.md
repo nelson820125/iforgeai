@@ -129,14 +129,14 @@ brew install powershell
 GitHub：
 
 ```sh
-git clone https://github.com/nelson820125/iforgeai
+git clone https://github.com/nelson820125/iforgeai.git
 cd iforgeai
 ```
 
 Gitee：
 
 ```sh
-git clone https://gitee.com/jordium/iforgeai
+git clone https://gitee.com/jordium/iforgeai.git
 cd iforgeai
 ```
 
