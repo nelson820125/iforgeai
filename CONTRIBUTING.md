@@ -1,4 +1,4 @@
-# Contributing to forgeai
+# Contributing to iforgeAI
 
 ## Before you start
 

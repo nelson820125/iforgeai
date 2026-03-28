@@ -1,4 +1,4 @@
-# jordium-forgeai — OpenAI Codex CLI
+# iforgeAI — OpenAI Codex CLI
 
 > 将此文件放置于项目根目录的 `AGENTS.md`。
 > 本文件包含全部 10 个专家角色和编排器的完整定义。

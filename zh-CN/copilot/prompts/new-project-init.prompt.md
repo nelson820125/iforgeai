@@ -40,7 +40,7 @@ agent: "agent"
 > *（占位值：`fullstack`）*
 >
 > **Q3.** 产出文档（需求、架构设计等）使用什么语言？
-> 可选：`zh-CN`（简体中文）/ `en-US`（英文）/ `ja-JP`（日文）
+> 可选：`zh-CN`（简体中文）/ `en-US`（英文）
 > *（占位值：`zh-CN`）*
 >
 > **Q4.** 本次迭代的 MVP 目标一句话是什么？
@@ -153,7 +153,7 @@ agent: "agent"
 
 - project_name: "{Q1 答案}"
 - project_type: "{Q2 答案}"   # fullstack | frontend-only | backend-only | api-only
-- output_language: "{Q3 答案}"   # en-US | zh-CN | ja-JP
+- output_language: "{Q3 答案}"   # en-US | zh-CN
 - db_approach: "{Q7 答案}"          # database-first | code-first（纯前端项目可省略此行）
 - design_approach: "{Q8 答案}"      # architecture-first | ui-first（纯后端项目可省略此行）
 - delivery_mode: "{Q9 答案}"        # standard | scrum

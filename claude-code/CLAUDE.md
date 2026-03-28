@@ -1,4 +1,4 @@
-# jordium-forgeai — Claude Code
+# iforgeAI — Claude Code
 
 > Place as `CLAUDE.md` in your project root, or `~/.claude/CLAUDE.md` for global use.
 > All 10 specialist roles and the orchestrator are defined in this single file.

@@ -1,6 +1,6 @@
-# forgeai
+# iforgeAI
 
-[![VS Code](https://img.shields.io/badge/VS%20Code-1.99%2B-0078d4?logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/) [![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-supported-000000?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot) [![Claude Code](https://img.shields.io/badge/Claude_Code-supported-CC785C?logo=anthropic&logoColor=white)](https://www.anthropic.com/claude-code) [![Codex CLI](https://img.shields.io/badge/Codex_CLI-supported-412991?logo=openai&logoColor=white)](https://github.com/openai/codex)
+[![VS Code](https://img.shields.io/badge/VS%20Code-1.99%2B-0078d4?logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/) [![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-supported-000000?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot) [![Claude Code](https://img.shields.io/badge/Claude_Code-supported-CC785C?logo=anthropic&logoColor=white)](https://www.anthropic.com/claude-code) [![Codex CLI](https://img.shields.io/badge/Codex_CLI-supported-412991?logo=openai&logoColor=white)](https://github.com/openai/codex) [![DevOps Docker Capability](https://img.shields.io/badge/DevOps-Docker%20Capability-2496ED?logo=docker&logoColor=white)](https://www.docker.com/) [![DevOps CI/CD Capability](https://img.shields.io/badge/DevOps-CI%2FCD%20Capability-0A66C2?logo=githubactions&logoColor=white)](https://github.com/features/actions)
 
 [中文](README.zh-CN.md)
 
@@ -10,9 +10,13 @@ by [jordium.com](https://jordium.com)
 
 ---
 
-forgeai provides 10 specialist AI agents for GitHub Copilot — one per delivery role. Each agent has defined inputs, outputs, and handoff points. A coordinator agent (`@digital-team`) connects them into a sequential workflow with human gate reviews between phases.
+iforgeAI provides 10 specialist AI agents for GitHub Copilot — one per delivery role. Each agent has defined inputs, outputs, and handoff points. A coordinator agent (`@digital-team`) connects them into a sequential workflow with human gate reviews between phases.
+
+To avoid conflicts with existing products using similar names in the market, the project has been renamed from `forgeai` to `iforgeAI`.
 
 Current backend support: .NET. Java support is planned for a future release.
+
+The DevOps role includes Docker configuration and CI/CD pipeline delivery capabilities, and generates these artifacts on demand based on the `docker` and `cicd` settings in `.ai/context/workflow-config.md`.
 
 Adapters for Claude Code and OpenAI Codex CLI are also available. See [Claude Code & Codex CLI](#claude-code--codex-cli) below.
 
@@ -122,9 +126,18 @@ brew install powershell
 
 ### 1. Clone the repository
 
+GitHub:
+
 ```sh
-git clone https://github.com/jordium/jordium-forgeai.git
-cd jordium-forgeai
+git clone https://github.com/nelson820125/iforgeai
+cd iforgeai
+```
+
+Gitee:
+
+```sh
+git clone https://gitee.com/jordium/iforgeai
+cd iforgeai
 ```
 
 ### 2. Run the installer
@@ -177,7 +190,7 @@ Agents and instructions are loaded at startup. The reload is required after the 
 pwsh ./uninstall.ps1
 ```
 
-Removes all installed agents, skills, instructions, and prompts, and restores `settings.json` to its pre-install state. If you had a `chat.pluginLocations` entry before installing forgeai, the original value is preserved; if the key did not exist, it is removed entirely.
+Removes all installed agents, skills, instructions, and prompts, and restores `settings.json` to its pre-install state. If you had a `chat.pluginLocations` entry before installing iforgeAI, the original value is preserved; if the key did not exist, it is removed entirely.
 
 To preview what will be removed without making any changes:
 
@@ -261,7 +274,7 @@ Invoke any role by prefixing your message with its trigger phrase. After each ph
 
 ## Language Support
 
-ForgeAI installs in **English by default**. The output language of agent-generated deliverables (requirements, architecture docs, DB design, etc.) is controlled per-project by the `output_language` field in `.ai/context/workflow-config.md`.
+iforgeAI installs in **English by default**. The output language of agent-generated deliverables (requirements, architecture docs, DB design, etc.) is controlled per-project by the `output_language` field in `.ai/context/workflow-config.md`.
 
 ### Chinese (Simplified) Users
 
@@ -278,7 +291,7 @@ This installs the same components from the `zh-CN/copilot/` source tree.
 After running `/init-project`, open `.ai/context/workflow-config.md` and set:
 
 ```yaml
-output_language: "zh-CN" # en-US | zh-CN | ja-JP
+output_language: "zh-CN" # en-US | zh-CN
 ```
 
 All agents read this value at startup and write their deliverables in the specified language.
@@ -287,7 +300,7 @@ All agents read this value at startup and write their deliverables in the specif
 
 ## Scrum Mode
 
-By default forgeai uses `standard` delivery mode: all phase outputs are written to a single `.ai/temp/` directory. For projects with multiple releases and sprints, enable Scrum mode during project init.
+By default iforgeAI uses `standard` delivery mode: all phase outputs are written to a single `.ai/temp/` directory. For projects with multiple releases and sprints, enable Scrum mode during project init.
 
 ### Enabling Scrum mode
 
@@ -473,7 +486,7 @@ To add project-specific overrides, copy `project-template/.github/instructions/`
 ## Repository Structure
 
 ```
-jordium-forgeai/
+iforgeai/
 ├── install.ps1
 ├── uninstall.ps1
 ├── zh-CN/                     Simplified Chinese locale
@@ -510,7 +523,7 @@ File a GitHub Issue for:
 
 ## Premium Models and Network Access
 
-forgeai works best with Claude Sonnet or CodeX in Copilot's premium request mode. Larger context windows and stronger instruction-following improve role adherence across the 10-agent workflow.
+iforgeAI works best with Claude Sonnet or CodeX in Copilot's premium request mode. Larger context windows and stronger instruction-following improve role adherence across the 10-agent workflow.
 
 Premium request models require a GitHub Copilot Individual or Business subscription with premium request credits enabled.
 

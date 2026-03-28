@@ -1,4 +1,4 @@
-# jordium-forgeai — OpenAI Codex CLI
+# iforgeAI — OpenAI Codex CLI
 
 > Place this file as `AGENTS.md` in your project root.
 > All 10 specialist roles and the orchestrator are defined in this single file.

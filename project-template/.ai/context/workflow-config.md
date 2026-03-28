@@ -1,4 +1,4 @@
-# forgeai workflow config
+# iforgeAI workflow config
 
 > Controls which roles are active for this project. Read by `@digital-team` at startup.
 > Copy this template into each project and edit as needed.

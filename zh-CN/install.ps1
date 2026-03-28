@@ -1,7 +1,7 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-    Install jordium-forgeai AI development team to VS Code / GitHub Copilot.
+    Install iforgeAI AI development team to VS Code / GitHub Copilot.
 
 .DESCRIPTION
     Copies agents, skills, instructions, and prompts to your user-level
@@ -81,12 +81,27 @@ function Get-DefaultPaths {
 
 $defaults = Get-DefaultPaths
 
+function Show-IforgeaiLogo {
+    $logo = @(
+        ' ___ _____ ___  ____   ____ _____    _    ___ ',
+        '|_ _|  ___/ _ \|  _ \ / ___| ____|  / \  |_ _|',
+        ' | || |_ | | | | |_) | |  _|  _|   / _ \  | | ',
+        ' | ||  _|| |_| |  _ <| |_| | |___ / ___ \ | | ',
+        '|___|_|   \___/|_| \_\\____|_____/_/   \_\___|'
+    )
+
+    foreach ($line in $logo) {
+        Write-Host $line -ForegroundColor Cyan
+    }
+}
+
 # -----------------------------------------------------------------
 # 2. Interactive path confirmation
 # -----------------------------------------------------------------
 
 Write-Host ''
-Write-Host '  jordium-forgeai Installer' -ForegroundColor Cyan
+Show-IforgeaiLogo
+Write-Host '  iforgeAI Installer' -ForegroundColor Cyan
 Write-Host '  ------------------------------------------------------' -ForegroundColor DarkGray
 Write-Host '  The following directories will be used for installation.'
 Write-Host '  Press Enter to accept each default, or type a new path to override.'
@@ -122,7 +137,6 @@ Write-Host '  This can be changed at any time in your project''s  .ai/context/wo
 Write-Host ''
 Write-Host '    en-US   English (default)'
 Write-Host '    zh-CN   Simplified Chinese  (or run  .\zh-CN\install.ps1  to install Chinese agents & skills)'
-Write-Host '    ja-JP   Japanese'
 Write-Host ''
 $langInput  = Read-Host '  Language code [Enter = en-US]'
 $outputLang = if ([string]::IsNullOrWhiteSpace($langInput)) { 'en-US' } else { $langInput.Trim() }
@@ -317,7 +331,7 @@ Write-Host '  Registering plugin location in VS Code settings...' -ForegroundCol
 $settingsPath = Get-VSCodeSettingsPath
 $userDir      = Get-VSCodeUserDir
 $pluginKey    = $userDir.Replace('\', '\\')
-$backupFile   = Join-Path $userDir '.forgeai-settings-backup.json'
+$backupFile   = Join-Path $userDir '.iforgeai-settings-backup.json'
 
 if ($DryRun) {
     Write-Host "    [DRY] Would register chat.pluginLocations in VS Code settings." -ForegroundColor Magenta

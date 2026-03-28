@@ -1,12 +1,12 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-    Uninstall jordium-forgeai from VS Code / GitHub Copilot.
+    Uninstall iforgeAI from VS Code / GitHub Copilot.
 
 .DESCRIPTION
     Removes all agents, skills, instructions, and prompts installed by
     install.ps1, and restores VS Code settings.json to its pre-install
-    state: if chat.pluginLocations existed before forgeai was installed,
+    state: if chat.pluginLocations existed before iforgeAI was installed,
     the original value is restored; otherwise the key is removed entirely.
 
     Supports Windows, macOS, and Linux.
@@ -78,6 +78,20 @@ function Get-InstallPaths {
 
 $paths = Get-InstallPaths
 
+function Show-IforgeaiLogo {
+    $logo = @(
+        ' ___ _____ ___  ____   ____ _____    _    ___ ',
+        '|_ _|  ___/ _ \|  _ \ / ___| ____|  / \  |_ _|',
+        ' | || |_ | | | | |_) | |  _|  _|   / _ \  | | ',
+        ' | ||  _|| |_| |  _ <| |_| | |___ / ___ \ | | ',
+        '|___|_|   \___/|_| \_\\____|_____/_/   \_\___|'
+    )
+
+    foreach ($line in $logo) {
+        Write-Host $line -ForegroundColor Cyan
+    }
+}
+
 # -----------------------------------------------------------------
 # 2. Files installed by install.ps1 (derived from copilot/ source)
 # -----------------------------------------------------------------
@@ -123,6 +137,24 @@ $skillDirs = @(
 $removed  = 0
 $notFound = 0
 
+function Get-SettingsBackupFile {
+    param([string]$UserDir)
+
+    # Keep the legacy backup filename for users upgrading from forgeai.
+    $candidateFiles = @(
+        (Join-Path $UserDir '.iforgeai-settings-backup.json'),
+        (Join-Path $UserDir '.forgeai-settings-backup.json')
+    )
+
+    foreach ($candidate in $candidateFiles) {
+        if (Test-Path $candidate) {
+            return $candidate
+        }
+    }
+
+    return $candidateFiles[0]
+}
+
 function Remove-InstalledFile {
     param([string]$Path)
 
@@ -158,7 +190,8 @@ function Remove-DirIfEmpty {
 # -----------------------------------------------------------------
 
 Write-Host ''
-Write-Host '  jordium-forgeai Uninstaller' -ForegroundColor Cyan
+Show-IforgeaiLogo
+Write-Host '  iforgeAI Uninstaller' -ForegroundColor Cyan
 Write-Host '  ------------------------------------------------------' -ForegroundColor DarkGray
 Write-Host "    Agents dir    : $($paths['AgentsDir'])"
 Write-Host "    Instructions  : $($paths['InstructionsDir'])"
@@ -172,7 +205,7 @@ if ($DryRun) {
     Write-Host ''
 }
 else {
-    $confirm = Read-Host '  This will delete all forgeai agents, skills, instructions, and prompts. Continue? [y/N]'
+    $confirm = Read-Host '  This will delete all iforgeAI agents, skills, instructions, and prompts. Continue? [y/N]'
     if ($confirm -notmatch '^[Yy]') {
         Write-Host '  Uninstall cancelled.' -ForegroundColor Yellow
         exit 0
@@ -238,8 +271,7 @@ Write-Host '  Restoring VS Code settings...' -ForegroundColor Cyan
 
 $settingsFile = $paths['SettingsFile']
 $userDir      = $paths['UserDir']
-$backupFile   = Join-Path $userDir '.forgeai-settings-backup.json'
-$pluginKey    = $userDir.Replace('\', '\\')
+$backupFile   = Get-SettingsBackupFile -UserDir $userDir
 
 if (-not (Test-Path $settingsFile)) {
     Write-Host "    SKIP  settings.json not found at $settingsFile" -ForegroundColor DarkGray
@@ -251,7 +283,7 @@ elseif ($DryRun) {
             Write-Host '    [DRY] Would RESTORE original chat.pluginLocations (had other entries before install)' -ForegroundColor Magenta
         }
         else {
-            Write-Host '    [DRY] Would REMOVE chat.pluginLocations (was added fresh by forgeai)' -ForegroundColor Magenta
+            Write-Host '    [DRY] Would REMOVE chat.pluginLocations (was added fresh by iforgeAI)' -ForegroundColor Magenta
         }
     }
     else {

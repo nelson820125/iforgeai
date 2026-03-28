@@ -39,7 +39,7 @@ If `{project-name}` and `{project-type}` were already supplied as arguments, con
 > *(placeholder: `fullstack`)*
 >
 > **Q3.** What output language should agent deliverables (requirements, architecture docs, etc.) be written in?
-> Options: `en-US` (English) / `zh-CN` (Simplified Chinese) / `ja-JP` (Japanese)
+> Options: `en-US` (English) / `zh-CN` (Simplified Chinese)
 > *(placeholder: `en-US`)*
 >
 > **Q4.** What is the one-sentence MVP goal for this first iteration?
@@ -156,7 +156,7 @@ Using all collected answers, write the file with every answered field already fi
 
 - project_name: "{answer to Q1}"
 - project_type: "{answer to Q2}"   # fullstack | frontend-only | backend-only | api-only
-- output_language: "{answer to Q3}"   # en-US | zh-CN | ja-JP
+- output_language: "{answer to Q3}"   # en-US | zh-CN
 - db_approach: "{answer to Q7}"          # database-first | code-first (omit line if no backend)
 - design_approach: "{answer to Q8}"      # architecture-first | ui-first (omit line if no frontend)
 - delivery_mode: "{answer to Q9}"        # standard | scrum

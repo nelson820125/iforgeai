@@ -1,6 +1,6 @@
-# forgeai
+# iforgeAI
 
-[![VS Code](https://img.shields.io/badge/VS%20Code-1.99%2B-0078d4?logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/) [![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-支持-000000?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot) [![Claude Code](https://img.shields.io/badge/Claude_Code-支持-CC785C?logo=anthropic&logoColor=white)](https://www.anthropic.com/claude-code) [![Codex CLI](https://img.shields.io/badge/Codex_CLI-支持-412991?logo=openai&logoColor=white)](https://github.com/openai/codex)
+[![VS Code](https://img.shields.io/badge/VS%20Code-1.99%2B-0078d4?logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/) [![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-支持-000000?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot) [![Claude Code](https://img.shields.io/badge/Claude_Code-支持-CC785C?logo=anthropic&logoColor=white)](https://www.anthropic.com/claude-code) [![Codex CLI](https://img.shields.io/badge/Codex_CLI-支持-412991?logo=openai&logoColor=white)](https://github.com/openai/codex) [![DevOps Docker 能力](https://img.shields.io/badge/DevOps-Docker%E8%83%BD%E5%8A%9B-2496ED?logo=docker&logoColor=white)](https://www.docker.com/) [![DevOps CI/CD 能力](https://img.shields.io/badge/DevOps-CI%2FCD%E8%83%BD%E5%8A%9B-0A66C2?logo=githubactions&logoColor=white)](https://github.com/features/actions)
 
 [English](README.md)
 
@@ -10,9 +10,13 @@ by [jordium.com](https://jordium.com)
 
 ---
 
-forgeai 为 GitHub Copilot 提供 10 个专业 AI Agent，每个 Agent 对应一个交付角色，拥有明确的输入、输出和移交协议。协调者 Agent（`@digital-team`）将它们串联成顺序工作流，每个阶段之间设置人工门控审批。
+iforgeAI 为 GitHub Copilot 提供 10 个专业 AI Agent，每个 Agent 对应一个交付角色，拥有明确的输入、输出和移交协议。协调者 Agent（`@digital-team`）将它们串联成顺序工作流，每个阶段之间设置人工门控审批。
+
+为避免与市场上已有产品名称重复，项目已由 `forgeai` 更名为 `iforgeAI`。
 
 当前后端支持：.NET。Java 支持计划在后续版本中加入。
+
+DevOps 角色已内置 Docker 配置与 CI/CD 流水线产出能力，可根据 `.ai/context/workflow-config.md` 中的 `docker` 与 `cicd` 开关，按需生成对应交付物。
 
 Claude Code 和 OpenAI Codex CLI 平台适配版现已可用，支持完整的 10 角色工作流。详见下方 [Claude Code 与 Codex CLI](#claude-code-与-codex-cli) 章节。
 
@@ -122,9 +126,18 @@ brew install powershell
 
 ### 1. 克隆仓库
 
+GitHub：
+
 ```sh
-git clone https://github.com/jordium/jordium-forgeai.git
-cd jordium-forgeai
+git clone https://github.com/nelson820125/iforgeai
+cd iforgeai
+```
+
+Gitee：
+
+```sh
+git clone https://gitee.com/jordium/iforgeai
+cd iforgeai
 ```
 
 ### 2. 运行安装脚本
@@ -317,7 +330,7 @@ design_approach: "architecture-first"  # 默认
 
 ## Scrum 模式
 
-默认情况下 forgeai 使用 `standard` 交付模式：所有阶段产出写入单一的 `.ai/temp/` 目录。对于具有多版本和多 Sprint 的项目，可在初始化时开启 Scrum 模式。
+默认情况下 iforgeAI 使用 `standard` 交付模式：所有阶段产出写入单一的 `.ai/temp/` 目录。对于具有多版本和多 Sprint 的项目，可在初始化时开启 Scrum 模式。
 
 ### 开启 Scrum 模式
 
@@ -438,7 +451,7 @@ frontend-engineer: ⏭ 跳过 | 无前端界面
 ## 仓库结构
 
 ```
-jordium-forgeai/
+iforgeai/
 ├── install.ps1
 ├── shared/                    平台无关的角色与规范定义
 │   ├── roles/
@@ -471,7 +484,7 @@ jordium-forgeai/
 
 ## 高级模型与网络访问
 
-forgeai 在 Copilot 高级请求模式下效果最佳（Claude Sonnet/Opus, Codex, GPT-5.4等高级模型）。更大的上下文窗口和更强的指令遵循能力，在 10 个 Agent 的工作流中能显著提升角色行为一致性和代码质量。
+iforgeAI 在 Copilot 高级请求模式下效果最佳（Claude Sonnet/Opus, Codex, GPT-5.4等高级模型）。更大的上下文窗口和更强的指令遵循能力，在 10 个 Agent 的工作流中能显著提升角色行为一致性和代码质量。
 
 使用高级模型需要 GitHub Copilot Individual 或 Business 订阅，并开启高级请求额度。
 
