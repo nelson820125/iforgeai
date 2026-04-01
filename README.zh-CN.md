@@ -1,6 +1,8 @@
-# iforgeAI
+<p align="center">
+  <img src="public/assets/logo.png" width="300" alt="logo" />
+</p>
 
-[![VS Code](https://img.shields.io/badge/VS%20Code-1.99%2B-0078d4?logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/) [![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-支持-000000?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot) [![Claude Code](https://img.shields.io/badge/Claude_Code-支持-CC785C?logo=anthropic&logoColor=white)](https://www.anthropic.com/claude-code) [![Codex CLI](https://img.shields.io/badge/Codex_CLI-支持-412991?logo=openai&logoColor=white)](https://github.com/openai/codex) [![DevOps Docker 能力](https://img.shields.io/badge/DevOps-Docker%E8%83%BD%E5%8A%9B-2496ED?logo=docker&logoColor=white)](https://www.docker.com/) [![DevOps CI/CD 能力](https://img.shields.io/badge/DevOps-CI%2FCD%E8%83%BD%E5%8A%9B-0A66C2?logo=githubactions&logoColor=white)](https://github.com/features/actions) [![Version](https://img.shields.io/badge/版本-v1.0.0-blue)](CHANGELOG.md)
+[![VS Code](https://img.shields.io/badge/VS%20Code-1.99%2B-0078d4?logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/) [![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-支持-000000?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot) [![Claude Code](https://img.shields.io/badge/Claude_Code-支持-CC785C?logo=anthropic&logoColor=white)](https://www.anthropic.com/claude-code) [![Codex CLI](https://img.shields.io/badge/Codex_CLI-支持-412991?logo=openai&logoColor=white)](https://github.com/openai/codex) [![DevOps Docker 能力](https://img.shields.io/badge/DevOps-Docker%E8%83%BD%E5%8A%9B-2496ED?logo=docker&logoColor=white)](https://www.docker.com/) [![DevOps CI/CD 能力](https://img.shields.io/badge/DevOps-CI%2FCD%E8%83%BD%E5%8A%9B-0A66C2?logo=githubactions&logoColor=white)](https://github.com/features/actions) [![Version](https://img.shields.io/badge/版本-v1.1.0-blue)](CHANGELOG.md)
 
 [English](README.md)
 
