@@ -7,7 +7,11 @@ argument-hint: "Provide the requirements document path or describe the page/feat
 handoffs:
   - label: "✅ UI design complete, submit for review"
     agent: "digital-team"
-    prompt: "UI Designer has completed the design. Deliverable: .ai/temp/ui-design.md. Please proceed with Gate 3 approval."
+    prompt: "UI Designer has completed design (/design mode). Deliverables: .ai/temp/ui-design.md (draft), .ai/temp/ui-wireframe.html, .ai/context/ui-designs/_index.md. Please proceed with Gate 3 approval."
+    send: true
+  - label: "✅ UI design review complete, submit for review"
+    agent: "digital-team"
+    prompt: "UI Designer has completed design review (/review mode). Final spec in .ai/temp/ui-design.md, _index.md finalised. Please proceed with Gate 3b approval."
     send: true
   - label: "🔄 UI design needs revision"
     agent: "ui-designer"
@@ -26,7 +30,5 @@ handoffs:
 - UI specification entries must be instructions that a frontend engineer can execute directly
 
 ### Workflow Integration
-- Primary input: `.ai/temp/requirement.md` (PM deliverable)
-- Reference context: `.ai/context/ui_constraint.md` (UI constraints, if present)
-- Write output to `.ai/temp/ui-design.md`
-- After writing the file, click the "✅ UI design complete, submit for review" handoff button to return to the digital team
+- `/design` mode (default): invoked by `digital-team` Phase 3 or standalone. Read `.ai/temp/requirement.md` and `.ai/context/ui_constraint.md`. Output `.ai/temp/ui-design.md` (draft), `.ai/temp/ui-wireframe.html`, `.ai/context/ui-designs/_index.md` (skeleton). If using an external design tool, inform the user to place exports in `.ai/context/ui-designs/` and await Phase 3b. Click "✅ UI design complete" when done.
+- `/review` mode: invoked by `digital-team` Phase 3b or when user types `/review`. Design exports must already be in `.ai/context/ui-designs/`. Scan directory, finalise `_index.md`, update `ui-design.md` to final spec. Click "✅ UI design review complete" when done.

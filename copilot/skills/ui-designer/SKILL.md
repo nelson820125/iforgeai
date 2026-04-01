@@ -102,24 +102,53 @@ Read `delivery_mode` from `.ai/context/workflow-config.md`:
 - Provide clear interaction and style specs, written to `.ai/temp/ui-design.md`
 - Avoid "design that cannot be implemented"
 
+## Phase Mode
+
+This skill operates in two modes depending on how it is invoked:
+
+| Mode | Trigger | Task | Output |
+|------|---------|------|--------|
+| `/design` (default) | `digital-team` Phase 3, or standalone invocation | Wireframe + UI spec draft + page inventory skeleton | `.ai/temp/ui-design.md` (draft) + `.ai/temp/ui-wireframe.html` + `.ai/context/ui-designs/_index.md` (skeleton) |
+| `/review` | `digital-team` Phase 3b, or when user types `/review` | Visual review of exported design assets; finalise spec | `.ai/temp/ui-design.md` (final) + `.ai/context/ui-designs/_index.md` (completed) |
+
+**When invoked standalone without required prerequisites:** If `.ai/temp/requirement.md` is absent and no task is described, ask the user to clarify the goal before proceeding.
+
 ## Output
 
-1. Write the detailed UI design to `.ai/temp/ui-design.md` (aim for ≤ 800 words)
-2. Output must include (concise but accurate):
-   - **Design Layer Output** (detailed textual description)
-     - Page structure description
-     - Core interaction description
-     - User operation flow (can be textualised)
-   - **UI Output** (detailed textual description)
-     - Page UI design description (not pixel-precise, but implementation-guiding)
-     - Component usage standards (buttons, tables, forms, modals)
-     - State design description (loading, empty data, error, disabled)
-   - **Executable Notes for Frontend**
-     - Layout recommendations (Grid / Flex / responsive)
-     - Component decomposition recommendations
-     - Style variable recommendations (colours, spacing, typography)
-3. Output a static HTML wireframe to `.ai/temp/ui-wireframe.html` — see **Wireframe Rules** below
-4. Confirm with me before writing output
+### `/design` mode (default)
+
+1. Output a static HTML wireframe to `.ai/temp/ui-wireframe.html` — see **Wireframe Rules** below
+2. Write the UI design draft to `.ai/temp/ui-design.md` (aim for ≤ 800 words), including:
+   - **Design Layer**: page structure, core interactions, user operation flow
+   - **UI Spec**: layout description, component usage standards, state design (loading / empty / error / disabled)
+   - **Frontend Notes**: layout approach (Grid / Flex / responsive), component decomposition, style variable recommendations
+3. Create `.ai/context/ui-designs/_index.md` — page inventory (**always project-level; path does not change in scrum mode**):
+
+```markdown
+# UI Design Index
+source: stitch | figma | manual
+last-updated: {date}
+
+| Page | Route | File | Screenshot | Sprint | Reviewed |
+|------|-------|------|------------|--------|----------|
+| {name} | {route} | [TBD] | [TBD] | {sprint or -} | false |
+```
+
+4. Confirm with user before writing output
+
+### `/review` mode
+
+Triggered by `digital-team` Phase 3b or when user types `/review`. Requires exported design files to already be present in `.ai/context/ui-designs/`.
+
+1. Scan `.ai/context/ui-designs/` to locate each page's HTML — discovery order per page:
+   - `_index.md` `file` field if already filled
+   - `{page-name}/code.html` (Stitch per-page folder convention)
+   - `{PageName}.html` (Figma flat export convention)
+2. Update `_index.md`: fill actual `file` / `screenshot` paths, set `reviewed: true`, update `last-updated`
+3. Read each page's HTML; compare against the `/design` mode wireframe — note structural and token changes
+4. Update `.ai/temp/ui-design.md`: replace proposed token values with actual colours, spacing, typography; add new component variants or states revealed by the visual output
+
+**`ui-design.md` must reflect the final reviewed state before frontend-engineer begins work.**
 
 
 ## Wireframe Rules
@@ -149,6 +178,56 @@ The wireframe is a **design artefact for layout and colour communication**, not 
 - No CSS framework classes (no Bootstrap, Tailwind, etc.)
 - No CSS hover pseudo-classes or animations
 
+
+## UI Export Platform
+
+Read `ui_export_platform` from `.ai/context/workflow-config.md`. If the field is absent or set to `none`, skip this section entirely and proceed with standard output only.
+
+### `prompt-export` mode
+
+After writing `ui-wireframe.html` and `ui-design.md`, generate one additional file: `.ai/temp/ui-export-prompt.md`.
+
+This file contains structured prompts optimised for AI design tools (Stitch, v0, Anima, etc.):
+
+```markdown
+# UI Export Prompt
+
+## Tool Target
+<!-- Stitch | v0 | other —— fill in before pasting -->
+
+## Page: {page name}
+
+### Layout
+{2–4 sentence description of the overall page layout as a design generation prompt}
+
+### Key Components
+- {Component}: {state and visual description as a direct prompt instruction}
+
+### Colour Tokens
+- Primary: {value from design tokens}
+- Background: {value}
+- (repeat for each token)
+
+### Interaction Notes
+{Describe key interactions the tool should reflect; omit animated effects}
+```
+
+One block per page. Keep each page prompt under 300 words. Do not duplicate colour context across all pages — define tokens once at the top.
+
+### `figma-mcp` mode
+
+After writing `ui-wireframe.html` and `ui-design.md`:
+
+1. Generate `.ai/temp/ui-export-prompt.md` (same as `prompt-export` above)
+2. Read `.ai/context/figma-config.md` to confirm credentials are present
+3. Generate `.ai/temp/design-tokens.json` — colour, spacing, and typography in W3C Design Tokens format
+4. Generate `.ai/temp/component-spec.json` — component tree with variant states and design token references
+5. Inform the user:
+   > "Figma MCP integration requires the `figma-mcp` MCP Server to be registered in your VS Code MCP settings. Once configured, use the MCP tool to push `design-tokens.json` and `component-spec.json` to the target Figma file (`figma_file_name` in `.ai/context/figma-config.md`). See the iforgeAI README for MCP setup instructions."
+
+**Security reminder:** Confirm that `.ai/context/figma-config.md` is listed in `.gitignore` before proceeding.
+
+---
 
 ## Large-File Batch Write Rule
 

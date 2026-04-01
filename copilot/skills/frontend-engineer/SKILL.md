@@ -71,7 +71,8 @@ Read `delivery_mode` from `.ai/context/workflow-config.md`:
 ## Inputs
 
 - Detailed feature set and behaviour from Product Manager: `.ai/temp/requirement.md`
-- Page structure and interaction state from UI Designer: `.ai/temp/ui-design.md`
+- Interaction and style spec from UI Designer (**authoritative**): `.ai/temp/ui-design.md`
+- Visual design assets (if present): `.ai/context/ui-designs/_index.md` — read for page list; load each page's `file` path as layout reference HTML. If absent, fall back to `.ai/temp/ui-wireframe.html`. This path is always project-level and does not change in scrum mode.
 - Frontend architecture guidelines, API and data structure constraints from Architect: `.ai/temp/architect.md`
 - Task breakdown and delivery order from Project Manager: `.ai/temp/wbs.md`
 - Previous frontend engineer work log (if present): `.ai/records/frontend-engineer/tasks-notes.md`

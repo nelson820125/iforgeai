@@ -1,6 +1,6 @@
 # iforgeAI
 
-[![VS Code](https://img.shields.io/badge/VS%20Code-1.99%2B-0078d4?logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/) [![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-支持-000000?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot) [![Claude Code](https://img.shields.io/badge/Claude_Code-支持-CC785C?logo=anthropic&logoColor=white)](https://www.anthropic.com/claude-code) [![Codex CLI](https://img.shields.io/badge/Codex_CLI-支持-412991?logo=openai&logoColor=white)](https://github.com/openai/codex) [![DevOps Docker 能力](https://img.shields.io/badge/DevOps-Docker%E8%83%BD%E5%8A%9B-2496ED?logo=docker&logoColor=white)](https://www.docker.com/) [![DevOps CI/CD 能力](https://img.shields.io/badge/DevOps-CI%2FCD%E8%83%BD%E5%8A%9B-0A66C2?logo=githubactions&logoColor=white)](https://github.com/features/actions)
+[![VS Code](https://img.shields.io/badge/VS%20Code-1.99%2B-0078d4?logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/) [![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-支持-000000?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot) [![Claude Code](https://img.shields.io/badge/Claude_Code-支持-CC785C?logo=anthropic&logoColor=white)](https://www.anthropic.com/claude-code) [![Codex CLI](https://img.shields.io/badge/Codex_CLI-支持-412991?logo=openai&logoColor=white)](https://github.com/openai/codex) [![DevOps Docker 能力](https://img.shields.io/badge/DevOps-Docker%E8%83%BD%E5%8A%9B-2496ED?logo=docker&logoColor=white)](https://www.docker.com/) [![DevOps CI/CD 能力](https://img.shields.io/badge/DevOps-CI%2FCD%E8%83%BD%E5%8A%9B-0A66C2?logo=githubactions&logoColor=white)](https://github.com/features/actions) [![Version](https://img.shields.io/badge/版本-v1.0.0-blue)](CHANGELOG.md)
 
 [English](README.md)
 
@@ -29,10 +29,11 @@ Claude Code 和 OpenAI Codex CLI 平台适配版现已可用，支持完整的 1
 | P1   | 产品经理         | `@product-manager`   | `.ai/temp/requirement.md`                        |
 | P2a  | 架构师           | `@architect`         | `.ai/temp/architect.md` · `.ai/temp/api-contract.md`（骨架） |
 | P2b  | DBA 数据库设计师 | `@dba`               | `.ai/temp/db-design.md` · `.ai/temp/db-init.sql` |
-| P3   | UI 设计师        | `@ui-designer`       | `.ai/temp/ui-design.md`                          |
+| P3   | UI 设计师        | `@ui-designer`       | `.ai/temp/ui-design.md` · `.ai/temp/ui-wireframe.html` · `.ai/context/ui-designs/_index.md` |
+| P3b  | UI 设计师 · 设计审核 | `@ui-designer` (`UI设计审核:`) | `.ai/context/ui-designs/_index.md`（已补全）· `.ai/temp/ui-design.md`（终稿） |
 | P4   | 项目经理         | `@project-manager`   | `.ai/temp/wbs.md`                                |
 | P5a  | .NET 工程师      | `@dotnet-engineer`   | `.ai/temp/api-contract.md`（完整）               |
-| P5b  | Plan             | `@Plan`              | 代码级技术实施方案                               |
+| P5b  | Plan             | `@plan`              | `.ai/temp/plan.md`                               |
 | P6a  | 前端工程师       | `@frontend-engineer` | 源代码                                           |
 | P6b  | .NET 工程师      | `@dotnet-engineer`   | 源代码                                           |
 | P6c  | 架构师           | `@architect`         | `.ai/reports/architect/review-report-{v}.md`     |
@@ -40,6 +41,8 @@ Claude Code 和 OpenAI Codex CLI 平台适配版现已可用，支持完整的 1
 | P8   | DevOps 工程师   | `@devops-engineer`   | `.ai/reports/devops-engineer/deploy-guide-{v}.md` |
 
 `@digital-team` 是协调者。它读取 `.ai/temp/` 识别当前阶段、显示进度、执行门控审批。
+
+> **Copilot Chat（Agent 模式）：** 切换到 Agent 模式，从 Agent 选择器中选择角色——上表中的 `@名称` 是选择器内显示的 Agent 名称，不是聊天命令。**Claude Code / Codex CLI：** 使用触发词设置角色上下文。
 
 ## 工作流程
 
@@ -61,7 +64,7 @@ flowchart TD
     G4{"Gate 4\n人工审批"}
 
     P5A["P5a · .NET 工程师\n@dotnet-engineer /contract\napi-contract.md（完整 Schema）"]
-    P5B["P5b · Plan\n@Plan\n代码级实施方案"]
+    P5B["P5b · Plan\n@plan\nplan.md"]
     G5{"Gate 5\n人工审批"}
 
     P6A["P6a · 前端工程师\n@frontend-engineer\n源代码"]
@@ -252,7 +255,7 @@ cp zh-CN/codex/AGENTS.md /path/to/your/project/AGENTS.md
 | `UI:` 或 `UI设计:` | UI 设计师（P3） |
 | `Project Manager:` 或 `项目计划:` | 项目经理（P4） |
 | `API contract:` 或 `接口契约:` | .NET 工程师 —— 契约（P5a） |
-| `Plan:` 或 `实施方案:` | 技术方案（P5b） |
+| `Plan:` 或 `实施方案:` | 技术方案（P5b）—— 产出 `.ai/temp/plan.md` |
 | `Frontend:` 或 `前端开发:` | 前端工程师（P6a） |
 | `.NET:` 或 `后端开发:` | .NET 工程师 —— 开发（P6b） |
 | `Code review:` 或 `代码审查:` | 架构师 —— 代码审查（P6c） |
@@ -278,7 +281,10 @@ cp zh-CN/codex/AGENTS.md /path/to/your/project/AGENTS.md
 ├── context/
 │   ├── workflow-config.md       # 角色启用/跳过开关、技术栈、设计顺序、输出语言
 │   ├── architect_constraint.md  # 架构与库约束
-│   └── ui_constraint.md         # 品牌配色、风格基调、布局规范 — UI 阶段开始前手工填写
+│   ├── ui_constraint.md         # 品牌配色、风格基调、布局规范 — UI 阶段开始前手工填写
+│   └── ui-designs/              # 外部设计工具导出文件（Stitch、Figma），导出后放置于此
+│       ├── _index.md            # 页面清单 — 由 @ui-designer 阶段 A 创建，阶段 B 补全
+│       └── {page}/              # 按页目录（Stitch）或平铺 .html（Figma）
 ├── temp/                        # 各阶段产出文件（由 Agent 自动写入）
 ├── records/                     # 工程师工作日志
 └── reports/                     # QA 报告
@@ -326,6 +332,35 @@ design_approach: "architecture-first"  # 默认
 1. 在 `ui-design.md` 的样式变量节定义匹配的 CSS 自定义属性
 2. 在 `ui-wireframe.html` 的 `<style>` 块顶部直接应用这些变量
 
+#### UI 设计工作流 — 两阶段交接流程
+
+当使用外部设计工具（Stitch、Figma 等）时，`@ui-designer` 支持两阶段工作流。若不使用外部工具，可一次性完成两个阶段。
+
+**P3 — `/design` 模式**（Copilot Chat：从 Agent 选择器选择 **ui-designer**）
+- 生成 `ui-wireframe.html`（布局骨架）和 `ui-design.md`（规格草稿，含建议 Token 値）
+- 创建 `.ai/context/ui-designs/_index.md` 页面清单骨架（`file: [TBD]`）
+
+**人工步骤 — 放置导出文件**
+将设计工具导出的 zip 解压到 `.ai/context/ui-designs/`，无需整理目录结构，两种结构均支持：
+
+```
+.ai/context/ui-designs/
+  _index.md            ← P3 创建
+  Dashboard.html       ← Figma 平铺导出
+  Login.html
+  login/               ← Stitch 按页目录
+    code.html
+    screen.png
+```
+
+**P3b — `/review` 模式**（触发词：`UI设计审核:` / `UI审核:`）
+- 扫描 `ui-designs/`，填写 `_index.md` 实际文件路径，标记 `reviewed: true`
+- 对比导出文件与线框图；将 `ui-design.md` 更新为最终颜色、间距和组件变体
+
+> `ui-design.md` 必须反映审核后的最终状态，`@frontend-engineer` 才可开始工作。
+
+`@frontend-engineer` 读取 `_index.md` 获取各页面布局 HTML 路径。若 `_index.md` 不存在，回退到 `ui-wireframe.html`。
+
 ---
 
 ## Scrum 模式
@@ -372,7 +407,7 @@ current_sprint: "sprint-1"
 所有 Agent 均自动读取路径配置。若独立调用时 `current_version` / `current_sprint` 尚未设置，Agent 会主动询问：
 
 ```
-@dotnet-engineer  实现订单审批 API
+dotnet-engineer:  实现订单审批 API
 # Agent 询问："当前项目为 Scrum 模式，请问要使用哪个版本和 Sprint？"
 ```
 
@@ -408,15 +443,17 @@ frontend-engineer: ⏭ 跳过 | 无前端界面
 
 ### 独立调用单个角色
 
-所有 Agent 均可不经过 Orchestrator 直接使用：
+所有 Agent 均可不经过 Orchestrator 直接使用。
+
+**Copilot Chat（Agent 模式）：** 从 Agent 选择器选择角色，然后直接输入任务：
 
 ```
-@architect  评估是否需要引入事件溯源支持操作审计
-
-@dba  设计权限相关表结构，参考 .ai/temp/architect.md
-
-@frontend-engineer  实现权限管理页面，参考 .ai/temp/ui-design.md 中 Task #3
+architect           评估是否需要引入事件溯源支持操作审计
+dba                 设计权限相关表结构，参考 .ai/temp/architect.md
+frontend-engineer   实现权限管理页面，参考 .ai/temp/ui-design.md 中 Task #3
 ```
+
+**Claude Code / Codex CLI：** 使用触发词前缀——参见[触发词](#触发词)表格。
 
 ### Agent 阶段模式
 
@@ -424,13 +461,13 @@ frontend-engineer: ⏭ 跳过 | 无前端界面
 
 | Agent | 阶段 | 模式 | 行为说明 |
 |-------|------|------|----------|
-| `@dotnet-engineer` | P5a · API 契约定义 | `/contract` | 填写 `api-contract.md` 中的完整 Request/Response Schema，仅输出制文档，不编写代码 |
-| `@dotnet-engineer` | P6b · 后端开发 | `/develop`（默认）| 以 `api-contract.md` 为权威规范实现后端代码 |
-| `@architect` | P2a · 架构设计 | `/design`（默认）| 完成架构设计并输出 API 契约骨架 |
-| `@architect` | P6c · 代码 Review | `/review` | 对工程师成果物进行规范合规、结构、性能、接口完整性评审 |
+| `dotnet-engineer` | P5a · API 契约定义 | `/contract` | 填写 `api-contract.md` 中的完整 Request/Response Schema，仅输出制文档，不编写代码 |
+| `dotnet-engineer` | P6b · 后端开发 | `/develop`（默认）| 以 `api-contract.md` 为权威规范实现后端代码 |
+| `architect` | P2a · 架构设计 | `/design`（默认）| 完成架构设计并输出 API 契约骨架 |
+| `architect` | P6c · 代码 Review | `/review` | 对工程师成果物进行规范合规、结构、性能、接口完整性评审 |
 
 通过 `digital-team` 工作流调用时，模式标志由 Orchestrator 自动传递。独立调用规则：
-- 未指定模式标志时，Agent 默认使用主模式（`@dotnet-engineer` 默认 `/develop`，`@architect` 默认 `/design`）
+- 未指定模式标志时，Agent 默认使用主模式（`dotnet-engineer` 默认 `/develop`，`architect` 默认 `/design`）
 - 若所需前置成果物（如 `.ai/temp/wbs.md`、`.ai/temp/requirement.md`）不存在，且提示词中未描述具体任务，Agent 将主动向用户询问任务内容，而不是自行假设并继续
 
 ---
@@ -492,6 +529,28 @@ iforgeAI 在 Copilot 高级请求模式下效果最佳（Claude Sonnet/Opus, Cod
 
 GitHub Copilot 及其模型接口在中国大陆可能需要代理访问。推荐使用 DOVE：[dovee.cc](https://dovee.cc/aff.php?anaxjgyz1ozZq2B)。
 以上为推广链接。请确保 VPN 使用符合当地法律法规。
+
+---
+
+## Roadmap
+
+### v1.0.0 — 当前版本 ✅
+
+- 10 个专业角色 Agent，含明确的输入、输出和移交协议
+- `@digital-team` 协调者 Agent 与门控审批机制
+- `@plan` Agent（P5b）——产出 `.ai/temp/plan.md`，供下游工程师参考
+- `/init-project` 初始化提示词，含引导式配置问答
+- Scrum 交付模式，支持按 Sprint 版本化路径
+- DevOps Agent，内置 Docker 和 CI/CD 交付能力
+- Claude Code 和 Codex CLI 适配器
+- 简体中文版（`zh-CN/`）
+- UI 设计两阶段流程：P3 `/design` 线框图 → 外部工具导出 → P3b `/review` 审核 → `_index.md` 移交前端
+- `@ui-designer` 的 `prompt-export` 和 `figma-mcp` 模式（通过 `workflow-config.md` 中 `ui_export_platform` 配置）
+
+### v1.1.0 — 计划中
+
+- Java 后端支持
+- 更多 UI 组件库与技术栈预设
 
 ---
 

@@ -17,7 +17,8 @@ Invoke any role by typing its trigger phrase. The workflow is sequential; you co
 | P1 | Product Manager | `PM:` or `As PM:` |
 | P2a | Architect (design) | `Architect:` or `As Architect:` |
 | P2b | DBA | `DBA:` or `As DBA:` |
-| P3 | UI Designer | `UI:` or `As UI Designer:` |
+| P3 | UI Designer (design) | `UI:` or `As UI Designer:` |
+| P3b | UI Designer — Design Review | `UI review:` or `UI design review:` |
 | P4 | Project Manager | `Project Manager:` or `WBS:` |
 | P5a | .NET Engineer — API Contract | `API contract:` or `.NET contract:` |
 | P5b | Technical Plan | `Plan:` |
@@ -96,6 +97,7 @@ Check the following files in sequence to determine the current phase (use resolv
 | P2a   | Architect          | ⏳ Next     | .ai/temp/architect.md                                |
 | P2b   | DBA                | ⏳ Pending  | .ai/temp/db-design.md                                |
 | P3    | UI Designer        | ⏳ Pending  | .ai/temp/ui-design.md                                |
+| P3b   | UI Designer · Review | ⏳ Pending  | .ai/context/ui-designs/_index.md (finalised)         |
 | P4    | Project Manager    | ⏳ Pending  | .ai/temp/wbs.md                                      |
 | P5a   | .NET · Contract    | ⏳ Pending  | .ai/temp/api-contract.md                             |
 | P5b   | Plan               | ⏳ Pending  | .ai/temp/plan.md                                     |
@@ -242,7 +244,9 @@ You are a senior Database Architect. You translate logical architecture into phy
 
 ## P3 · UI Designer
 
-**Trigger:** `UI:` / `As UI Designer:` / `start UI design`
+### `/design` mode (default) — `UI:` / `As UI Designer:` / `start UI design`
+
+**Mode:** `/design` — Wireframe and draft spec. No external design tool output yet.
 
 You are a senior UX/UI Designer for B2B enterprise systems. You translate product requirements into executable design specifications for frontend engineers.
 
@@ -259,23 +263,41 @@ Also read `.ai/context/ui_constraint.md` for brand colours, style tone, UI libra
 - `.ai/temp/architect.md` (if architecture-first)
 - `.ai/context/ui_constraint.md`
 
-**Output — `.ai/temp/ui-design.md` (≤800 words) — must include:**
+**Output — three files:**
 
-1. **Design Layer** — page structure, information architecture, core user operation flows
-2. **UI Output** — page-by-page UI description; component states (default/hover/focus/disabled/loading/error/empty — all must be explicitly defined); layout guidance; component decomposition for frontend engineers
-3. **Style Variable Recommendations** — CSS custom property suggestions matching `ui_constraint.md` values: colours, spacing, typography, border radius
-
-**Also output `.ai/temp/ui-wireframe.html`** — a single self-contained static HTML wireframe:
-- All CSS in a `<style>` block at the top; CSS custom properties match `ui_constraint.md`
-- Semantic HTML5; each page as `<section class="page">` block
-- Component states shown as labeled blocks; colour legend in footer
-- **Forbidden:** `<script>`, external CDN fonts/CSS, framework classes, hover animations
+1. **`.ai/temp/ui-design.md`** (≤800 words, draft): Design Layer (page structure, info architecture, core user flows) · UI Output (page-by-page; all component states: default/hover/focus/disabled/loading/error/empty — all explicit; layout; component decomposition) · Style Variable Recommendations (CSS custom properties matching `ui_constraint.md`)
+2. **`.ai/temp/ui-wireframe.html`** — single self-contained static HTML: all CSS in `<style>` block; CSS custom properties from `ui_constraint.md`; semantic HTML5; each page as `<section class="page">`; component states as labelled blocks; colour legend in footer. Forbidden: `<script>`, external CDN, framework classes, animations.
+3. **`.ai/context/ui-designs/_index.md`** — page inventory skeleton:
+   ```
+   # UI Design Index
+   source: [stitch|figma|manual]
+   last-updated: {date}
+   | Page | Route | File | Screenshot | Sprint | Reviewed |
+   |------|-------|------|------------|--------|----------|
+   | {name} | {route} | [TBD] | [TBD] | - | false |
+   ```
 
 **Rules:**
 - No "simple and beautiful", "user-friendly", "intuitive" — use specific measurable descriptions
 - Every component state explicitly defined — never say "standard state"
 
-**After writing:** Present Gate 3 card.
+**After writing:** If using Stitch/Figma, tell the user to place exports in `.ai/context/ui-designs/` and await Phase 3b (`digital-team` will trigger `/review` mode). If no external tool, present Gate 3 card directly.
+
+---
+
+### `/review` mode — `UI review:` / `UI design review:`
+
+**Mode:** `/review` — Visual review after design tool export. Triggered by `digital-team` Phase 3b, or when user types `UI review:`.
+
+**Steps:**
+1. Scan `.ai/context/ui-designs/`; locate each page's HTML by priority: `_index.md` `file` field → `{page}/code.html` (Stitch) → `{Page}.html` (Figma flat)
+2. Update `_index.md`: fill actual `file`/`screenshot` paths, set `reviewed: true`, update `last-updated`
+3. Compare exports against Phase A wireframe; note structural and token changes
+4. Update `.ai/temp/ui-design.md`: replace proposed tokens with actual colours/spacing/typography; add new component variants or states
+
+**`ui-design.md` must reflect the reviewed final state before frontend engineer begins work.**
+
+**After writing:** Present Gate 3b card.
 
 ---
 

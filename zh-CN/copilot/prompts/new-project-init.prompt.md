@@ -105,6 +105,22 @@ agent: "agent"
 >
 > 请输入数字选择 [Enter = 1]:
 
+> **Q8.5.** 本项目使用哪种 UI 导出平台？
+>
+> | # | 选项 | 说明 |
+> |---|---|---|
+> | 1 | `none`（默认） | 仅输出线框图（HTML）和设计说明文档（Markdown），不对接外部平台。 |
+> | 2 | `prompt-export` | 在线框图基础上，额外生成结构化提示词文件（`.ai/temp/ui-export-prompt.md`），适配 Stitch、v0 等 AI 设计工具使用。 |
+> | 3 | `figma-mcp` | 在线框图基础上，额外生成设计 Token 和组件结构，并通过 MCP 推送到 Figma。需要 Figma 访问令牌。 |
+>
+> 请输入数字选择 [Enter = 1]：
+
+若选择 `figma-mcp`（选项 3）：
+
+> - Figma 个人访问令牌？*（必填 — 存储在 `.ai/context/figma-config.md`，不提交到版本控制）*
+> - Figma 团队 ID？*（可选 — 留空则在个人工作区创建文件）*
+> - 目标 Figma 文件名？*（例如 `MyProject - UI Design` / 留空则使用项目名称）*
+
 ### F 组 — 交付模式
 
 > **Q9.** 本项目使用哪种交付模式？
@@ -154,9 +170,10 @@ agent: "agent"
 - project_name: "{Q1 答案}"
 - project_type: "{Q2 答案}"   # fullstack | frontend-only | backend-only | api-only
 - output_language: "{Q3 答案}"   # en-US | zh-CN
-- db_approach: "{Q7 答案}"          # database-first | code-first（纯前端项目可省略此行）
-- design_approach: "{Q8 答案}"      # architecture-first | ui-first（纯后端项目可省略此行）
-- delivery_mode: "{Q9 答案}"        # standard | scrum
+- db_approach: "{Q7 答案}"              # database-first | code-first（纯前端项目可省略此行）
+- design_approach: "{Q8 答案}"          # architecture-first | ui-first（纯后端项目可省略此行）
+- ui_export_platform: "{Q8.5 答案}"     # none | prompt-export | figma-mcp（纯后端项目可省略此行）
+- delivery_mode: "{Q9 答案}"            # standard | scrum
 - current_version: "{Q10 答案}"     # 如 v1.0（standard 模式可省略）
 - current_sprint: "{Q10 答案}"      # 如 sprint-1（standard 模式可省略）
 
@@ -323,6 +340,23 @@ i18n:      ""   # zh-CN | en-US | both
 ## 参考资料
 
 （填写品牌规范 URL、Figma 链接或现有截图路径）
+```
+
+### `.ai/context/figma-config.md`
+
+仅当 `ui_export_platform` 为 `figma-mcp` 且文件不存在时创建。
+
+> **安全提示：** 此文件包含个人访问令牌。请将 `.ai/context/figma-config.md` 加入 `.gitignore`——不要提交到版本控制。
+
+```markdown
+# Figma MCP 配置
+
+> 当 ui_export_platform = figma-mcp 时，@ui-designer 读取此文件。
+> 不要将此文件提交到版本控制。
+
+figma_access_token: ""   # 你的 Figma 个人访问令牌（Settings → Personal access tokens）
+figma_team_id:      ""   # 可选 — 留空则在个人工作区操作
+figma_file_name:    ""   # 目标文件名，如 "MyProject - UI Design"
 ```
 
 ---

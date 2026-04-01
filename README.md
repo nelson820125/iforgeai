@@ -1,6 +1,6 @@
 # iforgeAI
 
-[![VS Code](https://img.shields.io/badge/VS%20Code-1.99%2B-0078d4?logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/) [![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-supported-000000?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot) [![Claude Code](https://img.shields.io/badge/Claude_Code-supported-CC785C?logo=anthropic&logoColor=white)](https://www.anthropic.com/claude-code) [![Codex CLI](https://img.shields.io/badge/Codex_CLI-supported-412991?logo=openai&logoColor=white)](https://github.com/openai/codex) [![DevOps Docker Capability](https://img.shields.io/badge/DevOps-Docker%20Capability-2496ED?logo=docker&logoColor=white)](https://www.docker.com/) [![DevOps CI/CD Capability](https://img.shields.io/badge/DevOps-CI%2FCD%20Capability-0A66C2?logo=githubactions&logoColor=white)](https://github.com/features/actions)
+[![VS Code](https://img.shields.io/badge/VS%20Code-1.99%2B-0078d4?logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/) [![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-supported-000000?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot) [![Claude Code](https://img.shields.io/badge/Claude_Code-supported-CC785C?logo=anthropic&logoColor=white)](https://www.anthropic.com/claude-code) [![Codex CLI](https://img.shields.io/badge/Codex_CLI-supported-412991?logo=openai&logoColor=white)](https://github.com/openai/codex) [![DevOps Docker Capability](https://img.shields.io/badge/DevOps-Docker%20Capability-2496ED?logo=docker&logoColor=white)](https://www.docker.com/) [![DevOps CI/CD Capability](https://img.shields.io/badge/DevOps-CI%2FCD%20Capability-0A66C2?logo=githubactions&logoColor=white)](https://github.com/features/actions) [![Version](https://img.shields.io/badge/version-v1.0.0-blue)](CHANGELOG.md)
 
 [中文](README.zh-CN.md)
 
@@ -29,10 +29,11 @@ Adapters for Claude Code and OpenAI Codex CLI are also available. See [Claude Co
 | P1    | Product Manager   | `@product-manager`   | `.ai/temp/requirement.md`                        |
 | P2a   | Architect         | `@architect`         | `.ai/temp/architect.md` · `.ai/temp/api-contract.md` (skeleton) |
 | P2b   | DBA               | `@dba`               | `.ai/temp/db-design.md` · `.ai/temp/db-init.sql` |
-| P3    | UI Designer       | `@ui-designer`       | `.ai/temp/ui-design.md`                          |
+| P3    | UI Designer       | `@ui-designer`       | `.ai/temp/ui-design.md` · `.ai/temp/ui-wireframe.html` · `.ai/context/ui-designs/_index.md` |
+| P3b   | UI Designer · Design Review | `@ui-designer` (`UI review:`) | `.ai/context/ui-designs/_index.md` (finalised) · `.ai/temp/ui-design.md` (final) |
 | P4    | Project Manager   | `@project-manager`   | `.ai/temp/wbs.md`                                |
 | P5a   | .NET Engineer     | `@dotnet-engineer`   | `.ai/temp/api-contract.md` (completed)           |
-| P5b   | Plan              | `@Plan`              | Implementation plan                              |
+| P5b   | Plan              | `@plan`              | `.ai/temp/plan.md`                               |
 | P6a   | Frontend Engineer | `@frontend-engineer` | Source code                                      |
 | P6b   | .NET Engineer     | `@dotnet-engineer`   | Source code                                      |
 | P6c   | Architect         | `@architect`         | `.ai/reports/architect/review-report-{v}.md`     |
@@ -40,6 +41,8 @@ Adapters for Claude Code and OpenAI Codex CLI are also available. See [Claude Co
 | P8    | DevOps Engineer   | `@devops-engineer`   | `.ai/reports/devops-engineer/deploy-guide-{v}.md` |
 
 `@digital-team` is the Orchestrator. It reads `.ai/temp/` to detect the current phase, displays progress, and runs gate reviews.
+
+> **Copilot Chat (Agent mode):** Switch to Agent mode and select agents from the agent picker — the `@name` above is the agent's picker name, not a chat command. **Claude Code / Codex CLI:** Use trigger phrases to set role context.
 
 ## Workflow
 
@@ -61,7 +64,7 @@ flowchart TD
     G4{"Gate 4\nReview"}
 
     P5A["P5a · .NET Engineer\n@dotnet-engineer /contract\napi-contract.md (full schemas)"]
-    P5B["P5b · Plan\n@Plan\nimplementation plan"]
+    P5B["P5b · Plan\n@plan\nplan.md"]
     G5{"Gate 5\nReview"}
 
     P6A["P6a · Frontend Engineer\n@frontend-engineer\nsource code"]
@@ -261,7 +264,7 @@ Invoke any role by prefixing your message with its trigger phrase. After each ph
 | `UI:` | UI Designer (P3) |
 | `Project Manager:` | Project Manager (P4) |
 | `API contract:` | .NET Engineer — contract (P5a) |
-| `Plan:` | Technical Plan (P5b) |
+| `Plan:` | Technical Plan (P5b) — outputs `.ai/temp/plan.md` |
 | `Frontend:` | Frontend Engineer (P6a) |
 | `.NET:` | .NET Engineer — dev (P6b) |
 | `Code review:` | Architect — code review (P6c) |
@@ -342,7 +345,7 @@ current_sprint: "sprint-1"
 All agents read the path configuration automatically. If invoked standalone and `current_version` / `current_sprint` are not set in the config, the agent will ask you to specify them:
 
 ```
-@dotnet-engineer  implement the order approval API
+dotnet-engineer:  implement the order approval API
 # Agent asks: "Scrum mode is active. Which version and sprint should I use?"
 ```
 
@@ -363,7 +366,10 @@ This creates a `.ai/` directory in the project root:
 ├── context/
 │   ├── workflow-config.md       # Role on/off switches, tech stack, design approach, and output_language
 │   ├── architect_constraint.md  # Architecture and library constraints
-│   └── ui_constraint.md         # Brand colours, style tone, layout — filled manually before UI phase
+│   ├── ui_constraint.md         # Brand colours, style tone, layout — filled manually before UI phase
+│   └── ui-designs/              # External design tool exports (Stitch, Figma) — place files here after export
+│       ├── _index.md            # Page inventory — created by @ui-designer Phase A, finalised in Phase B
+│       └── {page}/              # Per-page folder (Stitch) or flat .html files (Figma)
 ├── temp/                        # Phase outputs (written by each agent)
 ├── records/                     # Engineer work logs
 └── reports/                     # QA reports
@@ -411,6 +417,35 @@ If any field is left blank, `@ui-designer` will propose and apply a neutral ente
 1. Defines matching CSS custom properties in the Style Variables section of `ui-design.md`
 2. Applies them at the top of the `<style>` block in the generated `ui-wireframe.html`
 
+#### UI Design Workflow — Two-Phase Roundtrip
+
+`@ui-designer` supports a two-phase workflow when an external design tool (Stitch, Figma, etc.) is used. Skip Phase B if no external tool is involved.
+
+**P3 — `/design` mode** (Copilot Chat: select **ui-designer** from the agent picker)
+- Generates `ui-wireframe.html` (layout skeleton) and `ui-design.md` (draft spec with proposed tokens)
+- Creates `.ai/context/ui-designs/_index.md` as a page inventory skeleton (`file: [TBD]`)
+
+**Human step — Place exported files**
+Extract the design tool export zip into `.ai/context/ui-designs/`. No reorganisation required — both structures are supported:
+
+```
+.ai/context/ui-designs/
+  _index.md            ← created by P3
+  Dashboard.html       ← Figma flat export
+  Login.html
+  login/               ← Stitch per-page folder
+    code.html
+    screen.png
+```
+
+**P3b — `/review` mode** (trigger: `UI review:` / `UI design review:`)
+- Scans `ui-designs/`, fills `_index.md` with actual file paths, marks `reviewed: true`
+- Compares exports against the wireframe; updates `ui-design.md` with final colours, spacing, and component variants
+
+> `ui-design.md` must reflect the reviewed final state before `@frontend-engineer` begins work.
+
+`@frontend-engineer` reads `_index.md` to locate per-page layout HTML. Falls back to `ui-wireframe.html` if `_index.md` is absent.
+
 ---
 
 ## Usage
@@ -443,15 +478,17 @@ Roles with a skip entry are excluded from the workflow for the current project. 
 
 ### Use roles individually
 
-All agents work independently without going through the Orchestrator:
+All agents work independently without going through the Orchestrator.
+
+**Copilot Chat (Agent mode):** Select the agent from the picker, then type your task:
 
 ```
-@architect  assess whether event sourcing is needed for operation auditing
-
-@dba  design the permissions-related tables, reference .ai/temp/architect.md
-
-@frontend-engineer  implement the permissions page, reference .ai/temp/ui-design.md Task #3
+architect           assess whether event sourcing is needed for operation auditing
+dba                 design the permissions-related tables, reference .ai/temp/architect.md
+frontend-engineer   implement the permissions page, reference .ai/temp/ui-design.md Task #3
 ```
+
+**Claude Code / Codex CLI:** Use trigger phrase prefixes — see [Trigger phrases](#trigger-phrases).
 
 ### Agent phase modes
 
@@ -459,13 +496,13 @@ Some agents serve more than one phase in the workflow and behave differently dep
 
 | Agent | Phase | Mode | Behaviour |
 |-------|-------|------|-----------|
-| `@dotnet-engineer` | P5a · API Contract | `/contract` | Fills request/response schemas in `api-contract.md`. Outputs documentation only — no code. |
-| `@dotnet-engineer` | P6b · Backend Dev | `/develop` (default) | Implements backend code using `api-contract.md` as the authoritative spec. |
-| `@architect` | P2a · Architecture | `/design` (default) | Produces architecture design and API contract skeleton. |
-| `@architect` | P6c · Code Review | `/review` | Reviews engineer deliverables for standards, structure, performance, and API completeness. |
+| `dotnet-engineer` | P5a · API Contract | `/contract` | Fills request/response schemas in `api-contract.md`. Outputs documentation only — no code. |
+| `dotnet-engineer` | P6b · Backend Dev | `/develop` (default) | Implements backend code using `api-contract.md` as the authoritative spec. |
+| `architect` | P2a · Architecture | `/design` (default) | Produces architecture design and API contract skeleton. |
+| `architect` | P6c · Code Review | `/review` | Reviews engineer deliverables for standards, structure, performance, and API completeness. |
 
 `digital-team` passes the correct mode automatically when routing through the workflow. When invoked standalone:
-- Agents default to their primary mode (`/develop` for `@dotnet-engineer`, `/design` for `@architect`)
+- Agents default to their primary mode (`/develop` for `dotnet-engineer`, `/design` for `architect`)
 - If required prerequisite files are absent **and** no task is described in the prompt, the agent asks for clarification rather than proceeding with assumptions
 
 ---
@@ -531,6 +568,28 @@ Premium request models require a GitHub Copilot Individual or Business subscript
 
 GitHub Copilot and its model endpoints may be inaccessible in mainland China without a proxy. We recommend DOVE: [dovee.cc](https://dovee.cc/aff.php?anaxjgyz1ozZq2B).
 This is a referral link. Ensure VPN usage complies with applicable local laws and regulations.
+
+---
+
+## Roadmap
+
+### v1.0.0 — Current release ✅
+
+- 10 specialist role agents with defined inputs, outputs, and handoffs
+- `@digital-team` orchestrator with gate review system
+- `@plan` agent (P5b) — outputs `.ai/temp/plan.md` for downstream engineers
+- `/init-project` initialisation prompt with guided configuration interview
+- Scrum delivery mode with versioned sprint paths
+- DevOps agent with Docker and CI/CD delivery
+- Claude Code and Codex CLI adapters
+- Simplified Chinese locale (`zh-CN/`)
+- UI design two-phase roundtrip: P3 `/design` wireframe → external tool export → P3b `/review` → `_index.md` handoff to frontend
+- `prompt-export` and `figma-mcp` modes for `@ui-designer` (configure via `ui_export_platform` in `workflow-config.md`)
+
+### v1.1.0 — Planned
+
+- Java backend support
+- Additional UI library and tech stack presets
 
 ---
 

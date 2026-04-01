@@ -5,9 +5,13 @@ tools: [read, search, edit]
 user-invocable: true
 argument-hint: "提供需求文档路径或描述需要设计的页面/功能"
 handoffs:
-  - label: "✅ UI 设计完成，提交审核"
+  - label: "✅ UI 设计完成，提交审批"
     agent: "digital-team"
-    prompt: "UI 设计师已完成设计，产出文件：.ai/temp/ui-design.md。请进行 Gate 3 门控审批。"
+    prompt: "UI 设计师已完成设计（/design 模式）。产出文件：.ai/temp/ui-design.md（草稿）、.ai/temp/ui-wireframe.html、.ai/context/ui-designs/_index.md。请进行 Gate 3 门控审批。"
+    send: true
+  - label: "✅ UI 设计审核完成，提交审批"
+    agent: "digital-team"
+    prompt: "UI 设计师已完成设计审核（/review 模式）。终稿已写入 .ai/temp/ui-design.md，_index.md 已补全。请进行 Gate 3b 门控审批。"
     send: true
   - label: "🔄 UI 设计需要修改"
     agent: "ui-designer"
@@ -26,7 +30,5 @@ handoffs:
 - UI 规范条目必须是前端工程师可以直接执行的指令
 
 ### 与工作流的衔接
-- 主要输入：`.ai/temp/requirement.md`（PM 产出）
-- 参考上下文：`.ai/context/ui_constraint.md`（UI 约束，若存在）
-- 完成后输出到 `.ai/temp/ui-design.md`
-- 输出文件后，点击上方 "✅ UI 设计完成，提交审核" 按钮返回数字团队
+- `/design` 模式（默认）：由 `digital-team` 阶段 3 或独立调用触发。读取 `.ai/temp/requirement.md` 和 `.ai/context/ui_constraint.md`。输出 `.ai/temp/ui-design.md`（草稿）、`.ai/temp/ui-wireframe.html`、`.ai/context/ui-designs/_index.md`（骨架）。若使用外部设计工具，告知用户将导出文件放入 `.ai/context/ui-designs/` 并等待阶段 3b。完成后点击『✅ UI 设计完成』。
+- `/review` 模式：由 `digital-team` 阶段 3b 或用户输入 `/review` 触发。设计导出文件必须已存在于 `.ai/context/ui-designs/`。扫描目录，补全 `_index.md`，将 `ui-design.md` 更新为终稿。完成后点击『✅ UI 设计审核完成』。

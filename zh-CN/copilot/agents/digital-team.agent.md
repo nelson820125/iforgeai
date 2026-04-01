@@ -19,7 +19,11 @@ handoffs:
     send: true
   - label: "▶ Phase 3 · UI/UX 设计"
     agent: "ui-designer"
-    prompt: "开始UI设计。请读取 .ai/temp/requirement.md 作为输入。"
+    prompt: "开始 UI 设计（/design 模式）。请读取 .ai/temp/requirement.md 作为输入。"
+    send: true
+  - label: "▶ Phase 3b · UI 设计审核"
+    agent: "ui-designer"
+    prompt: "开始 UI 设计审核（/review 模式）。设计导出文件已放入 .ai/context/ui-designs/。扫描目录，补全 _index.md，将 ui-design.md 更新为终稿。"
     send: true
   - label: "▶ Phase 4 · 项目计划 WBS"
     agent: "project-manager"

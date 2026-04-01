@@ -19,7 +19,11 @@ handoffs:
     send: true
   - label: "▶ Phase 3 · UI/UX Design"
     agent: "ui-designer"
-    prompt: "Start UI design. Read .ai/temp/requirement.md as input."
+    prompt: "Start UI design (/design mode). Read .ai/temp/requirement.md as input."
+    send: true
+  - label: "▶ Phase 3b · UI Design Review"
+    agent: "ui-designer"
+    prompt: "Start UI design review (/review mode). Design exports have been placed in .ai/context/ui-designs/. Scan directory, finalise _index.md, and update ui-design.md to final spec."
     send: true
   - label: "▶ Phase 4 · Project Plan WBS"
     agent: "project-manager"

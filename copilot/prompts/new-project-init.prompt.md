@@ -106,6 +106,22 @@ Ask only if the project type includes a frontend (i.e. not `backend-only` or `ap
 >
 > Enter a number [Enter = 1]:
 
+> **Q8.5.** Which UI export platform will this project use?
+>
+> | # | Option | Description |
+> |---|---|---|
+> | 1 | `none` *(default)* | Output wireframe (HTML) and design spec (Markdown) only. No external platform integration. |
+> | 2 | `prompt-export` | After wireframe, also generate a structured prompt file (`.ai/temp/ui-export-prompt.md`) optimised for Stitch, v0, or similar AI design tools. |
+> | 3 | `figma-mcp` | After wireframe, also generate design tokens and component structures, and push to Figma via MCP. Requires Figma access token. |
+>
+> Enter a number [Enter = 1]:
+
+If `figma-mcp` (option 3) is selected:
+
+> - Figma personal access token? *(required — stored in `.ai/context/figma-config.md`, never committed to source control)*
+> - Figma team ID? *(optional — leave blank to create files in personal workspace)*
+> - Target Figma file name? *(e.g. `MyProject - UI Design` / leave blank to use project name)*
+
 ### Group F — Delivery mode
 
 > **Q9.** What delivery mode will this project use?
@@ -157,9 +173,10 @@ Using all collected answers, write the file with every answered field already fi
 - project_name: "{answer to Q1}"
 - project_type: "{answer to Q2}"   # fullstack | frontend-only | backend-only | api-only
 - output_language: "{answer to Q3}"   # en-US | zh-CN
-- db_approach: "{answer to Q7}"          # database-first | code-first (omit line if no backend)
-- design_approach: "{answer to Q8}"      # architecture-first | ui-first (omit line if no frontend)
-- delivery_mode: "{answer to Q9}"        # standard | scrum
+- db_approach: "{answer to Q7}"              # database-first | code-first (omit line if no backend)
+- design_approach: "{answer to Q8}"          # architecture-first | ui-first (omit line if no frontend)
+- ui_export_platform: "{answer to Q8.5}"     # none | prompt-export | figma-mcp (omit line if no frontend)
+- delivery_mode: "{answer to Q9}"            # standard | scrum
 - current_version: "{answer to Q10}"     # e.g. v1.0  (omit line if standard)
 - current_sprint: "{answer to Q10}"      # e.g. sprint-1  (omit line if standard)
 
@@ -326,6 +343,23 @@ i18n:      ""   # zh-CN | en-US | both
 ## Reference
 
 (Brand guideline URL, Figma link, or existing screenshot path)
+```
+
+### `.ai/context/figma-config.md`
+
+Create this file only if `ui_export_platform` is `figma-mcp` and the file does not already exist.
+
+> **Security notice:** This file contains a personal access token. Add `.ai/context/figma-config.md` to your `.gitignore` — never commit it to source control.
+
+```markdown
+# Figma MCP Configuration
+
+> Read by @ui-designer when ui_export_platform = figma-mcp.
+> DO NOT commit this file to source control.
+
+figma_access_token: ""   # Your Figma personal access token (Settings → Personal access tokens)
+figma_team_id:      ""   # Optional — leave blank to use personal workspace
+figma_file_name:    ""   # Target file name, e.g. "MyProject - UI Design"
 ```
 
 ---
