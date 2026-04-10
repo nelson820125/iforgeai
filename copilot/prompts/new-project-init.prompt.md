@@ -50,9 +50,18 @@ If `{project-name}` and `{project-type}` were already supplied as arguments, con
 
 Based on the project type from Q2, suggest which roles to skip and ask the user to confirm or adjust:
 
-- `frontend-only` → suggest: skip `dba`, `dotnet-engineer`
+- `frontend-only` → suggest: skip `dba`, `dotnet-engineer`, `java-engineer`, `python-engineer`
 - `backend-only` or `api-only` → suggest: skip `ui-designer`, `frontend-engineer`
 - `fullstack` → all roles enabled by default
+
+**For any project type that includes a backend**, ask:
+
+> **Q5b.** Which backend engineer(s) will this project use? (multiple selection allowed)
+> Options: `dotnet-engineer` (.NET/C#) / `java-engineer` (Java/Spring Boot) / `python-engineer` (Python/FastAPI) / `all`
+> *(default: based on detected project files — `.csproj` → dotnet, `pom.xml`/`build.gradle` → java, `requirements.txt`/`pyproject.toml`/`uv.lock` → python, none detected → ask explicitly)*
+>
+> Enable only the selected engineer(s); set all others to `skip | not needed for this project`
+> Multiple engineers can be enabled simultaneously (e.g. Java for backend API + Python for data pipeline)
 
 > **Q5.** Based on the project type, the suggested role setup is:
 > *(show the suggested table)*
@@ -72,11 +81,12 @@ Ask only for the sections relevant to the project type. For skipped roles (e.g. 
 > - CSS approach? *(e.g. SCSS + CSS Variables / Tailwind CSS 4 / skip)*
 > - State management? *(e.g. Pinia / Zustand / skip)*
 > - UI component library? *(e.g. Element Plus / Ant Design 5 / skip)*
-> - Backend framework? *(e.g. ASP.NET Core 9 / NestJS 11 / skip)*
-> - ORM / data access? *(e.g. EF Core 9 / Dapper / SqlSugar / skip)*
-> - Database? *(e.g. PostgreSQL 17 / SQL Server 2022 / skip)*
+> - Backend framework? *(e.g. ASP.NET Core 9 / Spring Boot 3.x / NestJS 11 / skip)*
+> - ORM / data access? *(e.g. EF Core 9 / MyBatis Plus 3.x / Dapper / SqlSugar / skip)*
+> - Database? *(e.g. PostgreSQL 17 / SQL Server 2022 / MySQL 8 / skip)*
 > - Cache? *(e.g. Redis 8 / skip)*
-> - Deploy platform? *(e.g. Docker + Nginx / Azure App Service / skip)*
+> - Message queue? *(e.g. Apache Kafka / RabbitMQ / skip — relevant for Java/Spring Cloud projects)*
+> - Deploy platform? *(e.g. Docker + Nginx / Azure App Service / Kubernetes / skip)*
 
 Leave any field as `""` if the user skips it.
 
@@ -192,6 +202,8 @@ Using all collected answers, write the file with every answered field already fi
 | plan              | {status}                | {reason or -}          |
 | frontend-engineer | {status}                | {reason or -}          |
 | dotnet-engineer   | {status}                | {reason or -}          |
+| java-engineer     | {status}                | {reason or -}          |
+| python-engineer   | {status}                | {reason or -}          |
 | qa-engineer       | {status}                | {reason or -}          |
 
 ## Phase Sequence
@@ -200,12 +212,12 @@ Using all collected answers, write the file with every answered field already fi
 
 **architecture-first** (default)
 ```
-P1(PM) → P2a(Architect) → P2b(DBA) → Gate 2 → P3(UI Designer) → P4 → P5 → P6(Frontend + .NET) → P7
+P1(PM) → P2a(Architect) → P2b(DBA) → Gate 2 → P3(UI Designer) → P4 → P5 → P6(Frontend + .NET/.Java/.Python) → P7
 ```
 
 **ui-first**
 ```
-P1(PM) → P2(UI Designer) → P3a(Architect) → P3b(DBA) → Gate 3 → P4 → P5 → P6(Frontend + .NET) → P7
+P1(PM) → P2(UI Designer) → P3a(Architect) → P3b(DBA) → Gate 3 → P4 → P5 → P6(Frontend + .NET/.Java/.Python) → P7
 ```
 
 ## Tech Stack
@@ -360,6 +372,85 @@ Create this file only if `ui_export_platform` is `figma-mcp` and the file does n
 figma_access_token: ""   # Your Figma personal access token (Settings → Personal access tokens)
 figma_team_id:      ""   # Optional — leave blank to use personal workspace
 figma_file_name:    ""   # Target file name, e.g. "MyProject - UI Design"
+```
+
+---
+
+## Step 4: Create Project-Level Coding Standards Templates
+
+Based on the project type and enabled engineers, create the following override files in `.github/instructions/`. Each file contains a short header only — the full standards are inherited from the global files installed with iforgeai; this file is for project-specific additions.
+
+**If project type includes a frontend** (fullstack or frontend-only), create `.github/instructions/coding-standards-frontend.instructions.md`:
+
+```markdown
+---
+description: "Project-specific frontend standards. Extends the global coding-standards-frontend for this project."
+applyTo: ["**/*.vue", "**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.scss", "**/*.css"]
+---
+
+# Project-Specific Frontend Standards
+
+> Global standards apply. Add project-specific overrides below.
+
+## Tech Stack
+- Framework: {Q6 frontend framework or TBD}
+- CSS: {Q6 CSS approach or TBD}
+- State: {Q6 state management or TBD}
+- UI Library: {Q6 UI component library or TBD}
+```
+
+**If `dotnet-engineer` is enabled**, create `.github/instructions/coding-standards-dotnet.instructions.md`:
+
+```markdown
+---
+description: "Project-specific .NET/C# standards. Extends global coding-standards-dotnet for this project."
+applyTo: "**/*.cs"
+---
+
+# Project-Specific .NET Standards
+
+> Global standards apply. Add project-specific overrides below.
+
+## Tech Stack
+- Framework: {Q6 backend framework or TBD}
+- ORM: {Q6 ORM or TBD}
+- Database: {Q6 database or TBD}
+```
+
+**If `java-engineer` is enabled**, create `.github/instructions/coding-standards-java.instructions.md`:
+
+```markdown
+---
+description: "Project-specific Java standards. Extends global coding-standards-java for this project."
+applyTo: "**/*.java"
+---
+
+# Project-Specific Java Standards
+
+> Global standards apply. Add project-specific overrides below.
+
+## Tech Stack
+- Framework: {Q6 backend framework or TBD}
+- ORM: {Q6 ORM or TBD}
+- Database: {Q6 database or TBD}
+```
+
+**If `python-engineer` is enabled**, create `.github/instructions/coding-standards-python.instructions.md`:
+
+```markdown
+---
+description: "Project-specific Python standards. Extends global coding-standards-python for this project."
+applyTo: ["**/*.py"]
+---
+
+# Project-Specific Python Standards
+
+> Global standards apply. Add project-specific overrides below.
+
+## Tech Stack
+- Framework: {Q6 backend framework or TBD}
+- ORM: {Q6 ORM or TBD}
+- Database: {Q6 database or TBD}
 ```
 
 ---

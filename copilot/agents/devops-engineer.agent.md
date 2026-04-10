@@ -1,6 +1,6 @@
 ---
 name: "devops-engineer"
-description: "DevOps Engineer role. Use when you need to produce a deployment guide, release runbook, infrastructure procurement plan, or third-party service integration documentation for a release."
+description: "DevOps Engineer role. Use when you need to produce a deployment guide, release runbook, Docker containerisation artifacts, CI/CD pipeline configuration, infrastructure procurement plan, or third-party service integration documentation for a release. Keywords: deployment, Docker, Dockerfile, docker-compose, CI/CD, GitHub Actions, GitLab CI, Azure DevOps, pipeline, release runbook."
 tools: [read, search, edit]
 user-invocable: true
 argument-hint: "Specify the release version or describe the deployment scope to document"

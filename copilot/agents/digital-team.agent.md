@@ -29,12 +29,20 @@ handoffs:
     agent: "project-manager"
     prompt: "Start task breakdown. Read .ai/temp/requirement.md, .ai/temp/architect.md and .ai/temp/db-design.md as input."
     send: true
-  - label: "▶ Phase 5a · API Contract Definition"
+  - label: "▶ Phase 5a · API Contract Definition (.NET)"
     agent: "dotnet-engineer"
     prompt: "Start API contract definition (/contract mode). Read .ai/temp/api-contract.md (architect skeleton) and .ai/temp/wbs.md. Fill in the full Request/Response schemas for all endpoints. Do NOT write implementation code — output documentation only."
     send: true
+  - label: "▶ Phase 5a · API Contract Definition (Java)"
+    agent: "java-engineer"
+    prompt: "Start API contract definition (/contract mode). Read .ai/temp/api-contract.md (architect skeleton) and .ai/temp/wbs.md. Fill in the full Request/Response schemas for all endpoints. Do NOT write implementation code — output documentation only."
+    send: true
+  - label: "▶ Phase 5a · API Contract Definition (Python)"
+    agent: "python-engineer"
+    prompt: "Start API contract definition (/contract mode). Read .ai/temp/api-contract.md (architect skeleton) and .ai/temp/wbs.md. Fill in the full Request/Response schemas for all endpoints using Pydantic v2 models. Do NOT write implementation code — output documentation only."
+    send: true
   - label: "▶ Phase 5b · Technical Implementation Plan"
-    agent: "Plan"
+    agent: "plan"
     prompt: "Start technical implementation planning. Read .ai/temp/wbs.md, .ai/temp/architect.md, .ai/temp/api-contract.md and .ai/temp/db-design.md as input, and produce a code-level implementation plan for this iteration."
     send: true
   - label: "▶ Phase 6a · Frontend Development"
@@ -43,6 +51,14 @@ handoffs:
     send: true
   - label: "▶ Phase 6b · .NET Backend Development"
     agent: "dotnet-engineer"
+    prompt: "Start backend development (/develop mode). Read .ai/temp/wbs.md, .ai/temp/db-design.md and .ai/temp/api-contract.md for the task list, database design and API contract."
+    send: true
+  - label: "▶ Phase 6b · Java Backend Development"
+    agent: "java-engineer"
+    prompt: "Start backend development (/develop mode). Read .ai/temp/wbs.md, .ai/temp/db-design.md and .ai/temp/api-contract.md for the task list, database design and API contract."
+    send: true
+  - label: "▶ Phase 6b · Python Backend Development"
+    agent: "python-engineer"
     prompt: "Start backend development (/develop mode). Read .ai/temp/wbs.md, .ai/temp/db-design.md and .ai/temp/api-contract.md for the task list, database design and API contract."
     send: true
   - label: "▶ Phase 6c · Code Review"
@@ -166,6 +182,9 @@ Summary: {key content in ≤ 100 words}
 - Check if the workspace has frontend code files (`*.vue`, `*.tsx`, `*.html`)
 - If not → Suggest skipping UI Designer and frontend engineer
 - Check if there is a `.csproj` file → Confirm whether a .NET engineer is needed
+- Check if there is a `pom.xml` or `build.gradle` file → Confirm whether a Java engineer is needed
+- Check if there is a `requirements.txt`, `pyproject.toml`, or `uv.lock` file → Confirm whether a Python engineer is needed
+- If multiple backend indicator files exist → Ask which backend engineer(s) to enable (can select multiple)
 - Based on detection results, suggest the user review the `workflow-config.md` configuration
 
 ## Progress Status Format
@@ -181,7 +200,7 @@ Summary: {key content in ≤ 100 words}
 | P3    | UI Designer         | ⏭ Skipped  | -                               |
 | P4    | Project Manager     | ⏳ Pending  | .ai/temp/wbs.md                 |
 | P5    | Plan                | ⏳ Pending  | -                               |
-| P6    | Frontend + .NET     | ⏳ Pending  | -                               |
+| P6    | Frontend + .NET / Java / Python | ⏳ Pending  | -                        |
 | P7    | QA Test             | ⏳ Pending  | .ai/reports/qa-report.md        |
 | P8    | DevOps Engineer     | ⏳ Pending  | .ai/reports/devops-engineer/deploy-guide.md |
 

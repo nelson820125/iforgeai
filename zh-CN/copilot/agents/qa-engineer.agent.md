@@ -7,7 +7,7 @@ argument-hint: "描述需要测试的功能范围或指定验收的 WBS Task"
 handoffs:
   - label: "✅ QA 完成，提交发布评估"
     agent: "digital-team"
-    prompt: "QA 测试工程师已完成质量验证，测试报告：.ai/reports/qa-report.md。请进行最终发布评估。"
+    prompt: "QA 测试工程师已完成质量验证，测试报告：.ai/reports/qa-report-{version}.md。请进行最终发布评估。"
     send: true
   - label: "🐛 发现问题，退回开发修复"
     agent: "digital-team"

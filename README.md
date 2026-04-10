@@ -4,6 +4,8 @@
 
 [![VS Code](https://img.shields.io/badge/VS%20Code-1.99%2B-0078d4?logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/) [![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-supported-000000?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot) [![Claude Code](https://img.shields.io/badge/Claude_Code-supported-CC785C?logo=anthropic&logoColor=white)](https://www.anthropic.com/claude-code) [![Codex CLI](https://img.shields.io/badge/Codex_CLI-supported-412991?logo=openai&logoColor=white)](https://github.com/openai/codex) [![DevOps Docker Capability](https://img.shields.io/badge/DevOps-Docker%20Capability-2496ED?logo=docker&logoColor=white)](https://www.docker.com/) [![DevOps CI/CD Capability](https://img.shields.io/badge/DevOps-CI%2FCD%20Capability-0A66C2?logo=githubactions&logoColor=white)](https://github.com/features/actions) [![Version](https://img.shields.io/badge/version-v1.1.0-blue)](CHANGELOG.md)
 
+![Vue](https://img.shields.io/badge/Vue_3-4FC08D?logo=vuedotjs&logoColor=white) ![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white) ![.NET](https://img.shields.io/badge/.NET-512BD4?logo=dotnet&logoColor=white) ![Java](https://img.shields.io/badge/Java-ED8B00?logo=openjdk&logoColor=white) ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?logo=springboot&logoColor=white) ![Spring Cloud](https://img.shields.io/badge/Spring_Cloud-6DB33F?logo=spring&logoColor=white) ![MyBatis](https://img.shields.io/badge/MyBatis-C71A36?logo=mybatis&logoColor=white) ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white) ![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white) ![SQL Server](https://img.shields.io/badge/SQL_Server-CC2927?logo=microsoftsqlserver&logoColor=white) ![MySQL](https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white) ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white) ![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white) ![and more](https://img.shields.io/badge/&_more...-lightgrey)
+
 [中文](README.zh-CN.md)
 
 A structured AI agent toolkit for GitHub Copilot, designed for software delivery teams.
@@ -16,11 +18,14 @@ iforgeAI provides 10 specialist AI agents for GitHub Copilot — one per deliver
 
 To avoid conflicts with existing products using similar names in the market, the project has been renamed from `forgeai` to `iforgeAI`.
 
-Current backend support: .NET. Java support is planned for a future release.
+Backend support: .NET (C#), Java (Spring Boot), and Python (FastAPI). Multiple backend engineers can coexist in a single project.
 
 The DevOps role includes Docker configuration and CI/CD pipeline delivery capabilities, and generates these artifacts on demand based on the `docker` and `cicd` settings in `.ai/context/workflow-config.md`.
 
 Adapters for Claude Code and OpenAI Codex CLI are also available. See [Claude Code & Codex CLI](#claude-code--codex-cli) below.
+
+VS Code 1.115.0 supports a visual Prompt UI for project initialization, making configuration easier.
+![Prompt UI](public/assets/prompt-ui.png)
 
 ---
 
@@ -34,10 +39,10 @@ Adapters for Claude Code and OpenAI Codex CLI are also available. See [Claude Co
 | P3    | UI Designer       | `@ui-designer`       | `.ai/temp/ui-design.md` · `.ai/temp/ui-wireframe.html` · `.ai/context/ui-designs/_index.md` |
 | P3b   | UI Designer · Design Review | `@ui-designer` (`UI review:`) | `.ai/context/ui-designs/_index.md` (finalised) · `.ai/temp/ui-design.md` (final) |
 | P4    | Project Manager   | `@project-manager`   | `.ai/temp/wbs.md`                                |
-| P5a   | .NET Engineer     | `@dotnet-engineer`   | `.ai/temp/api-contract.md` (completed)           |
+| P5a   | Backend Engineer  | `@dotnet-engineer` / `@java-engineer` / `@python-engineer` | `.ai/temp/api-contract.md` (completed)           |
 | P5b   | Plan              | `@plan`              | `.ai/temp/plan.md`                               |
 | P6a   | Frontend Engineer | `@frontend-engineer` | Source code                                      |
-| P6b   | .NET Engineer     | `@dotnet-engineer`   | Source code                                      |
+| P6b   | Backend Engineer  | `@dotnet-engineer` / `@java-engineer` / `@python-engineer` | Source code                                      |
 | P6c   | Architect         | `@architect`         | `.ai/reports/architect/review-report-{v}.md`     |
 | P7    | QA Engineer       | `@qa-engineer`       | `.ai/reports/qa-report.md`                       |
 | P8    | DevOps Engineer   | `@devops-engineer`   | `.ai/reports/devops-engineer/deploy-guide-{v}.md` |
@@ -65,20 +70,25 @@ flowchart TD
     P4["P4 · Project Manager\n@project-manager\nwbs.md"]
     G4{"Gate 4\nReview"}
 
-    P5A["P5a · .NET Engineer\n@dotnet-engineer /contract\napi-contract.md (full schemas)"]
+    P5A["P5a · Backend Engineer(s)\n@dotnet / java / python-engineer\napi-contract.md (full schemas)"]
     P5B["P5b · Plan\n@plan\nplan.md"]
     G5{"Gate 5\nReview"}
 
     P6A["P6a · Frontend Engineer\n@frontend-engineer\nsource code"]
-    P6B["P6b · .NET Engineer\n@dotnet-engineer /develop\nsource code"]
+    P6B["P6b · Backend Engineer(s)\n@dotnet / java / python-engineer\nsource code"]
     P6C["P6c · Architect\n@architect /review\nreview-report.md"]
     G6{"Gate 6\nReview"}
 
     P7["P7 · QA Engineer\n@qa-engineer\nqa-report.md"]
     G7{"Gate 7\nRelease Assessment"}
 
-    P8["P8 · DevOps Engineer\n@devops-engineer\ndeploy-guide.md"]
-    DONE(["✅ Release approved\nHuman deployment"])
+    P8["P8 · DevOps Engineer\n@devops-engineer"]
+    G8{"Deployment\nCapability?"}
+    P8A["📋 Deploy Checklist\ndeploy-guide.md"]
+    P8B["🐳 Dockerize\nDockerfile · docker-compose.yml"]
+    P8C["⚙️ CI/CD Pipeline\npipeline config · auto-trigger"]
+    DONE_M(["✅ Human deployment\nManual execution"])
+    DONE_A(["🚀 Auto deployment\nMerge to main → CI/CD triggers"])
 
     REJECT["🔄 Return to role\nfor revision"]
 
@@ -105,7 +115,12 @@ flowchart TD
     P7 --> G7
     G7 -->|Approved| P8
     G7 -->|Issues found| REJECT
-    P8 --> DONE
+    P8 --> G8
+    G8 -->|No Docker / No CI/CD| P8A
+    G8 -->|Docker only| P8B
+    G8 -->|CI/CD enabled| P8C
+    P8A & P8B --> DONE_M
+    P8C --> DONE_A
 ```
 
 ---
@@ -266,9 +281,13 @@ Invoke any role by prefixing your message with its trigger phrase. After each ph
 | `UI:` | UI Designer (P3) |
 | `Project Manager:` | Project Manager (P4) |
 | `API contract:` | .NET Engineer — contract (P5a) |
+| `Java contract:` | Java Engineer — contract (P5a) |
+| `Python contract:` | Python Engineer — contract (P5a) |
 | `Plan:` | Technical Plan (P5b) — outputs `.ai/temp/plan.md` |
 | `Frontend:` | Frontend Engineer (P6a) |
 | `.NET:` | .NET Engineer — dev (P6b) |
+| `Java:` | Java Engineer — dev (P6b) |
+| `Python:` | Python Engineer — dev (P6b) |
 | `Code review:` | Architect — code review (P6c) |
 | `QA:` | QA Engineer (P7) |
 | `DevOps:` | DevOps Engineer (P8) |
@@ -500,6 +519,12 @@ Some agents serve more than one phase in the workflow and behave differently dep
 |-------|-------|------|-----------|
 | `dotnet-engineer` | P5a · API Contract | `/contract` | Fills request/response schemas in `api-contract.md`. Outputs documentation only — no code. |
 | `dotnet-engineer` | P6b · Backend Dev | `/develop` (default) | Implements backend code using `api-contract.md` as the authoritative spec. |
+| `java-engineer` | P5a · API Contract | `/contract` | Fills request/response schemas in `api-contract.md`. Outputs documentation only — no code. |
+| `java-engineer` | P6b · Backend Dev | `/develop` (default) | Implements backend code using `api-contract.md` as the authoritative spec. |
+| `python-engineer` | P5a · API Contract | `/contract` | Fills request/response schemas in `api-contract.md`. Outputs documentation only — no code. |
+| `python-engineer` | P6b · Backend Dev | `/develop` (default) | Implements backend code using `api-contract.md` as the authoritative spec. |
+| `ui-designer` | P3 · UI Design | `/design` (default) | Generates `ui-wireframe.html` layout skeleton and `ui-design.md` draft spec. Creates `_index.md` page inventory. |
+| `ui-designer` | P3b · Design Review | `/review` (trigger: `UI review:`) | Scans exported design files, fills `_index.md` with actual file paths, and updates `ui-design.md` to the final reviewed state. |
 | `architect` | P2a · Architecture | `/design` (default) | Produces architecture design and API contract skeleton. |
 | `architect` | P6c · Code Review | `/review` | Reviews engineer deliverables for standards, structure, performance, and API completeness. |
 
@@ -516,7 +541,9 @@ Two instruction files are applied automatically via `applyTo` glob patterns:
 | File                                        | Auto-applied to                                |
 | ------------------------------------------- | ---------------------------------------------- |
 | `coding-standards-dotnet.instructions.md`   | `**/*.cs`                                      |
-| `coding-standards-frontend.instructions.md` | `**/*.vue`, `**/*.ts`, `**/*.tsx`, `**/*.scss` |
+| `coding-standards-java.instructions.md`     | `**/*.java`                                    |
+| `coding-standards-python.instructions.md`   | `**/*.py`                                      |
+| `coding-standards-frontend.instructions.md` | `**/*.vue`, `**/*.jsx`, `**/*.tsx`, `**/*.ts`, `**/*.scss` |
 
 To add project-specific overrides, copy `project-template/.github/instructions/` into your workspace and fill in the marked sections. Project-level files take precedence over global ones.
 
@@ -570,28 +597,6 @@ Premium request models require a GitHub Copilot Individual or Business subscript
 
 GitHub Copilot and its model endpoints may be inaccessible in mainland China without a proxy. We recommend DOVE: [dovee.cc](https://dovee.cc/aff.php?anaxjgyz1ozZq2B).
 This is a referral link. Ensure VPN usage complies with applicable local laws and regulations.
-
----
-
-## Roadmap
-
-### v1.0.0 — Current release ✅
-
-- 10 specialist role agents with defined inputs, outputs, and handoffs
-- `@digital-team` orchestrator with gate review system
-- `@plan` agent (P5b) — outputs `.ai/temp/plan.md` for downstream engineers
-- `/init-project` initialisation prompt with guided configuration interview
-- Scrum delivery mode with versioned sprint paths
-- DevOps agent with Docker and CI/CD delivery
-- Claude Code and Codex CLI adapters
-- Simplified Chinese locale (`zh-CN/`)
-- UI design two-phase roundtrip: P3 `/design` wireframe → external tool export → P3b `/review` → `_index.md` handoff to frontend
-- `prompt-export` and `figma-mcp` modes for `@ui-designer` (configure via `ui_export_platform` in `workflow-config.md`)
-
-### v1.1.0 — Planned
-
-- Java backend support
-- Additional UI library and tech stack presets
 
 ---
 

@@ -29,12 +29,20 @@ handoffs:
     agent: "project-manager"
     prompt: "开始任务拆解。请读取 .ai/temp/requirement.md、.ai/temp/architect.md 和 .ai/temp/db-design.md 作为输入。"
     send: true
-  - label: "▶ Phase 5a · API 契约定义"
+  - label: "▶ Phase 5a · API 契约定义（.NET）"
     agent: "dotnet-engineer"
     prompt: "开始 API 契约定义（/contract 模式）。读取 .ai/temp/api-contract.md（架构师骨架）和 .ai/temp/wbs.md，为所有接口填充完整的 Request/Response Schema。本阶段不编写实现代码，只输出契约文档。"
     send: true
+  - label: "▶ Phase 5a · API 契约定义（Java）"
+    agent: "java-engineer"
+    prompt: "开始 API 契约定义（/contract 模式）。读取 .ai/temp/api-contract.md（架构师骨架）和 .ai/temp/wbs.md，为所有接口填充完整的 Request/Response Schema。本阶段不编写实现代码，只输出契约文档。"
+    send: true
+  - label: "▶ Phase 5a · API 契约定义（Python）"
+    agent: "python-engineer"
+    prompt: "开始 API 契约定义（/contract 模式）。读取 .ai/temp/api-contract.md（架构师骨架）和 .ai/temp/wbs.md，使用 Pydantic v2 模型为所有接口填充完整的 Request/Response Schema。本阶段不编写实现代码，只输出契约文档。"
+    send: true
   - label: "▶ Phase 5b · 技术实施规划"
-    agent: "Plan"
+    agent: "plan"
     prompt: "开始技术实施规划。请读取 .ai/temp/wbs.md、.ai/temp/architect.md、.ai/temp/api-contract.md 和 .ai/temp/db-design.md 作为输入，为本次迭代制定代码级实施方案。"
     send: true
   - label: "▶ Phase 6a · 前端开发"
@@ -43,6 +51,14 @@ handoffs:
     send: true
   - label: "▶ Phase 6b · .NET 后端开发"
     agent: "dotnet-engineer"
+    prompt: "开始后端开发（/develop 模式）。请读取 .ai/temp/wbs.md、.ai/temp/db-design.md 和 .ai/temp/api-contract.md 获取任务列表、数据库设计和 API 契约。"
+    send: true
+  - label: "▶ Phase 6b · Java 后端开发"
+    agent: "java-engineer"
+    prompt: "开始后端开发（/develop 模式）。请读取 .ai/temp/wbs.md、.ai/temp/db-design.md 和 .ai/temp/api-contract.md 获取任务列表、数据库设计和 API 契约。"
+    send: true
+  - label: "▶ Phase 6b · Python 后端开发"
+    agent: "python-engineer"
     prompt: "开始后端开发（/develop 模式）。请读取 .ai/temp/wbs.md、.ai/temp/db-design.md 和 .ai/temp/api-contract.md 获取任务列表、数据库设计和 API 契约。"
     send: true
   - label: "▶ Phase 6c · 代码 Review"
@@ -160,8 +176,8 @@ handoffs:
 **项目类型智能建议**（首次启动时）：
 - 检查工作区是否有前端代码文件（`*.vue`、`*.tsx`、`*.html`）
 - 如果没有 → 建议跳过 UI Designer 和前端工程师
-- 检查是否有 `.csproj` 文件 → 确认是否需要 .NET 工程师
-- 基于检测结果，建议用户确认 `workflow-config.md` 配置
+- 检查是否有 `.csproj` 文件 → 确认是否需要 .NET 工程师- 检查是否有 `pom.xml` 或 `build.gradle` 文件 → 确认是否需要 Java 工程师
+- 若 `.csproj` 和 `pom.xml`/`build.gradle` 同时存在 → 询问用户启用哪个/哪些后端工程师- 基于检测结果，建议用户确认 `workflow-config.md` 配置
 
 ## 进度状态格式
 
@@ -176,7 +192,7 @@ handoffs:
 | P3   | UI 设计师      | ⏭ 已跳过   | -                          |
 | P4   | 项目经理       | ⏳ 待启动   | .ai/temp/wbs.md           |
 | P5   | Plan           | ⏳ 待启动   | -                          |
-| P6   | 前端 + .NET    | ⏳ 待启动   | -                          |
+| P6   | 前端 + .NET / Java / Python | ⏳ 待启动   | -                     |
 | P7   | QA 测试        | ⏳ 待启动   | .ai/reports/qa-report.md  || P8   | DevOps 工程师  | ⏳ 待启动   | .ai/reports/devops-engineer/deploy-guide.md |
 ➡ 下一步：点击 "▶ Phase {N}" 按钮
 ```

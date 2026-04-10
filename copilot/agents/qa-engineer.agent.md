@@ -7,7 +7,7 @@ argument-hint: "Describe the feature scope to test, or specify the WBS Task to a
 handoffs:
   - label: "✅ QA complete, submit release assessment"
     agent: "digital-team"
-    prompt: "QA Engineer has completed quality verification. Test report: .ai/reports/qa-report.md. Please proceed with final release assessment."
+    prompt: "QA Engineer has completed quality verification. Test report: .ai/reports/qa-report-{version}.md. Please proceed with final release assessment."
     send: true
   - label: "🐛 Issues found, return to development for fixes"
     agent: "digital-team"

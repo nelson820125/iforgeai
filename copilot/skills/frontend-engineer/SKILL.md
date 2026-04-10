@@ -1,6 +1,6 @@
 ---
 name: frontend-engineer
-description: Frontend Engineer role skill. Use when you need to implement specific frontend features based on product requirements, UI design specs, and architecture constraints. Keywords: frontend development, component implementation, state management, Vue, page layout, interaction implementation, code standards, engineering quality.
+description: Frontend Engineer role skill. Use when you need to implement frontend features based on product requirements, UI design specs, and architecture constraints. Keywords: frontend development, component implementation, state management, Vue 3, React, TypeScript, SCSS, page layout, interaction implementation, API integration, routing, performance optimisation, code standards, engineering quality.
 ---
 
 ## Output Language Rule

@@ -1,6 +1,6 @@
 ---
 name: "devops-engineer"
-description: "DevOps 工程师角色。当需要在发布前输出部署指南、发布操作手册、基础设施采购计划或三方服务集成文档时使用。"
+description: "DevOps 工程师角色。当需要在发布前输出部署指南、Docker 容器化产物、CI/CD 流水线配置、发布操作手册、基础设施采购计划或三方服务集成文档时使用。关键词：部署、Docker、Dockerfile、docker-compose、CI/CD、GitHub Actions、GitLab CI、Azure DevOps、流水线、发布操作手册。"
 tools: [read, search, edit]
 user-invocable: true
 argument-hint: "指定发布版本号，或描述需要记录的部署范围"

@@ -1,5 +1,5 @@
 ---
-description: "Initialize the digital-team workspace for a new project. Guides the user through project configuration step by step, then creates .ai/ directories and a fully pre-filled workflow-config.md. Run before starting a new iteration."
+description: "在当前工作区初始化数字团队工作区。引导用户逐步完成项目配置，再创建 .ai/ 目录和 workflow-config.md。在启动新项目迭代前运行。"
 name: "init-project"
 argument-hint: "project-name project-type (fullstack/frontend-only/backend-only/api-only)"
 agent: "agent"
@@ -51,9 +51,18 @@ agent: "agent"
 
 根据 Q2 的项目类型，给出建议的跳过角色，请用户确认或调整：
 
-- `frontend-only` → 建议跳过：`dba`、`dotnet-engineer`
+- `frontend-only` → 建议跳过：`dba`、`dotnet-engineer`、`java-engineer`、`python-engineer`
 - `backend-only` / `api-only` → 建议跳过：`ui-designer`、`frontend-engineer`
 - `fullstack` → 默认全部启用
+
+**对于包含后端的所有项目类型**，追加询问：
+
+> **Q5b.** 本项目使用哪个/哪些后端工程师？（可多选）
+> 可选：`dotnet-engineer`（.NET/C#）/ `java-engineer`（Java/Spring Boot）/ `python-engineer`（Python/FastAPI）/ `全选`
+> *（默认判断：检测项目文件 — `.csproj` → dotnet，`pom.xml`/`build.gradle` → java，`requirements.txt`/`pyproject.toml`/`uv.lock` → python，均未检测到 → 明确询问）*
+>
+> 仅启用已选择的工程师；其余均设为 `skip | 项目不使用`
+> 可同时启用多个工程师（例如 Java 负责后端 API + Python 负责数据管道）
 
 > **Q5.** 根据项目类型，建议的角色配置如下：
 > *（展示建议表格）*
@@ -71,11 +80,12 @@ agent: "agent"
 > - CSS 方案？*（例如 SCSS + CSS Variables / Tailwind CSS 4 / 跳过）*
 > - 状态管理？*（例如 Pinia / Zustand / 跳过）*
 > - UI 组件库？*（例如 Element Plus / Ant Design 5 / 跳过）*
-> - 后端框架？*（例如 ASP.NET Core 9 / NestJS 11 / 跳过）*
-> - ORM / 数据访问？*（例如 EF Core 9 / Dapper / SqlSugar / 跳过）*
-> - 数据库？*（例如 PostgreSQL 17 / SQL Server 2022 / 跳过）*
+> - 后端框架？*（例如 ASP.NET Core 9 / Spring Boot 3.x / NestJS 11 / 跳过）*
+> - ORM / 数据访问？*（例如 EF Core 9 / MyBatis Plus 3.x / Dapper / SqlSugar / 跳过）*
+> - 数据库？*（例如 PostgreSQL 17 / SQL Server 2022 / MySQL 8 / 跳过）*
 > - 缓存？*（例如 Redis 8 / 跳过）*
-> - 部署平台？*（例如 Docker + Nginx / Azure App Service / 跳过）*
+> - 消息队列？*（例如 Apache Kafka / RabbitMQ / 跳过——Java/Spring Cloud 项目特别相关）*
+> - 部署平台？*（例如 Docker + Nginx / Azure App Service / Kubernetes / 跳过）*
 
 留空的字段写为 `""`。
 
@@ -189,6 +199,8 @@ agent: "agent"
 | plan              | {状态}                | {原因或 -}          |
 | frontend-engineer | {状态}                | {原因或 -}          |
 | dotnet-engineer   | {状态}                | {原因或 -}          |
+| java-engineer     | {状态}                | {原因或 -}          |
+| python-engineer   | {状态}                | {原因或 -}          |
 | qa-engineer       | {状态}                | {原因或 -}          |
 
 ## 阶段顺序
@@ -197,12 +209,12 @@ agent: "agent"
 
 **architecture-first**（默认）
 ```
-P1(PM) → P2a(架构) → P2b(DBA) → Gate 2 → P3(UI 设计师) → P4 → P5 → P6(前端 + .NET) → P7
+P1(PM) → P2a(架构) → P2b(DBA) → Gate 2 → P3(UI 设计师) → P4 → P5 → P6(前端 + .NET/Java/Python) → P7
 ```
 
 **ui-first**
 ```
-P1(PM) → P2(UI 设计师) → P3a(架构) → P3b(DBA) → Gate 3 → P4 → P5 → P6(前端 + .NET) → P7
+P1(PM) → P2(UI 设计师) → P3a(架构) → P3b(DBA) → Gate 3 → P4 → P5 → P6(前端 + .NET/Java/Python) → P7
 ```
 
 ## 技术栈
@@ -357,6 +369,85 @@ i18n:      ""   # zh-CN | en-US | both
 figma_access_token: ""   # 你的 Figma 个人访问令牌（Settings → Personal access tokens）
 figma_team_id:      ""   # 可选 — 留空则在个人工作区操作
 figma_file_name:    ""   # 目标文件名，如 "MyProject - UI Design"
+```
+
+---
+
+## 步骤 4：创建项目级代码规范模板
+
+根据项目类型和已启用的工程师角色，在 `.github/instructions/` 中创建对应的覆盖文件。每个文件只包含简短标头——全局规范继承自 iforgeai 安装的全局文件，此文件用于项目级添加。
+
+**如果项目类型包含前端**（fullstack 或 frontend-only），创建 `.github/instructions/coding-standards-frontend.instructions.md`：
+
+```markdown
+---
+description: "项目级前端规范。在全局 coding-standards-frontend 基础上添加项目特定规则。"
+applyTo: ["**/*.vue", "**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.scss", "**/*.css"]
+---
+
+# 项目级前端规范
+
+> 全局规范默认生效。在此添加项目特定覆盖规则。
+
+## 技术栈
+- 框架：{Q6 前端框架，或 TBD}
+- CSS：{Q6 CSS 方案，或 TBD}
+- 状态管理：{Q6 状态管理，或 TBD}
+- UI 组件库：{Q6 UI 组件库，或 TBD}
+```
+
+**如果已启用 `dotnet-engineer`**，创建 `.github/instructions/coding-standards-dotnet.instructions.md`：
+
+```markdown
+---
+description: "项目级 .NET/C# 规范。在全局 coding-standards-dotnet 基础上添加项目特定规则。"
+applyTo: "**/*.cs"
+---
+
+# 项目级 .NET 规范
+
+> 全局规范默认生效。在此添加项目特定覆盖规则。
+
+## 技术栈
+- 框架：{Q6 后端框架，或 TBD}
+- ORM：{Q6 ORM，或 TBD}
+- 数据库：{Q6 数据库，或 TBD}
+```
+
+**如果已启用 `java-engineer`**，创建 `.github/instructions/coding-standards-java.instructions.md`：
+
+```markdown
+---
+description: "项目级 Java 规范。在全局 coding-standards-java 基础上添加项目特定规则。"
+applyTo: "**/*.java"
+---
+
+# 项目级 Java 规范
+
+> 全局规范默认生效。在此添加项目特定覆盖规则。
+
+## 技术栈
+- 框架：{Q6 后端框架，或 TBD}
+- ORM：{Q6 ORM，或 TBD}
+- 数据库：{Q6 数据库，或 TBD}
+```
+
+**如果已启用 `python-engineer`**，创建 `.github/instructions/coding-standards-python.instructions.md`：
+
+```markdown
+---
+description: "项目级 Python 规范。在全局 coding-standards-python 基础上添加项目特定规则。"
+applyTo: ["**/*.py"]
+---
+
+# 项目级 Python 规范
+
+> 全局规范默认生效。在此添加项目特定覆盖规则。
+
+## 技术栈
+- 框架：{Q6 后端框架，或 TBD}
+- ORM：{Q6 ORM，或 TBD}
+- 数据库：{Q6 数据库，或 TBD}
 ```
 
 ---

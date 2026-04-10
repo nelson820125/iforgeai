@@ -1,6 +1,6 @@
 ---
 description: "Use when writing, reviewing or modifying frontend code including Vue components, TypeScript, CSS/SCSS. Covers component structure, state management, naming conventions, and style standards."
-applyTo: ["**/*.vue", "**/*.ts", "**/*.tsx", "**/*.scss", "**/*.css"]
+applyTo: ["**/*.vue", "**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.scss", "**/*.css"]
 ---
 
 # Frontend Coding Standards (Global)

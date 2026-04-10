@@ -21,9 +21,13 @@ Invoke any role by prefixing your task with its trigger phrase. The workflow is 
 | P3b | UI Designer — Design Review | `UI review:` or `UI design review:` |
 | P4 | Project Manager | `Project Manager:` or `WBS:` |
 | P5a | .NET Engineer — API Contract | `API contract:` or `.NET contract:` |
+| P5a | Java Engineer — API Contract | `Java contract:` or `Java API contract:` |
 | P5b | Technical Plan | `Plan:` |
 | P6a | Frontend Engineer | `Frontend:` or `As Frontend:` |
 | P6b | .NET Engineer — Backend Dev | `.NET:` or `As .NET Engineer:` |
+| P6b | Java Engineer — Backend Dev | `Java:` or `As Java Engineer:` |
+| P5a | Python Engineer — API Contract | `Python contract:` or `Python API contract:` |
+| P6b | Python Engineer — Backend Dev | `Python:` or `As Python Engineer:` |
 | P6c | Architect — Code Review | `Code review:` or `Architect review:` |
 | P7 | QA Engineer | `QA:` or `As QA:` |
 | P8 | DevOps Engineer | `DevOps:` or `As DevOps:` |
@@ -99,10 +103,10 @@ Check the following files in sequence (use resolved temp/reports paths):
 | P3    | UI Designer        | ⏳ Pending  | .ai/temp/ui-design.md                                |
 | P3b   | UI Designer · Review | ⏳ Pending  | .ai/context/ui-designs/_index.md (finalised)         |
 | P4    | Project Manager    | ⏳ Pending  | .ai/temp/wbs.md                                      |
-| P5a   | .NET · Contract    | ⏳ Pending  | .ai/temp/api-contract.md                             |
-| P5b   | Plan               | ⏳ Pending  | .ai/temp/plan.md                                     |
-| P6a   | Frontend Engineer  | ⏳ Pending  | source code                                          |
-| P6b   | .NET · Backend     | ⏳ Pending  | source code                                          |
+| P5a   | Backend · Contract    | ⏳ Pending  | .ai/temp/api-contract.md                          |
+| P5b   | Plan                  | ⏳ Pending  | .ai/temp/plan.md                                  |
+| P6a   | Frontend Engineer     | ⏳ Pending  | source code                                       |
+| P6b   | .NET / Java / Python · Backend | ⏳ Pending  | source code                                       |
 | P6c   | Architect · Review | ⏳ Pending  | .ai/reports/architect/review-report-{v}.md           |
 | P7    | QA Engineer        | ⏳ Pending  | .ai/reports/qa-report-{v}.md                         |
 | P8    | DevOps Engineer    | ⏳ Pending  | .ai/reports/devops-engineer/deploy-guide-{v}.md      |
@@ -297,6 +301,38 @@ You are the .NET Backend Engineer in **contract mode**. Documentation only — n
 
 ---
 
+## P5a · Java Engineer — API Contract
+
+**Trigger:** `Java contract:` / `Java API contract:` / `start Java API contract`
+
+You are the Java Backend Engineer in **contract mode**. Documentation only — no implementation code.
+
+**Inputs:** `.ai/temp/api-contract.md` (architect skeleton), `.ai/temp/wbs.md`, `.ai/temp/requirement.md`.
+
+**Output — complete `.ai/temp/api-contract.md`:** For every endpoint fill in — full Request schema (fields, types, nullable, JSR-380 validation, example), full Response schema (success + all error variants), HTTP status codes for every exit, auth requirements, input validation rules, idempotency requirements.
+
+**Rules:** No Java code. Every schema complete and unambiguous. Follow architect’s protocol, naming, auth method, envelope structure.
+
+**After writing:** Present Gate 5 card (combined with `plan.md` if P5b is also done).
+
+---
+
+## P5a · Python Engineer — API Contract
+
+**Trigger:** `Python contract:` / `Python API contract:` / `start Python API contract`
+
+You are the Python Backend Engineer in **contract mode**. Documentation only — no implementation code.
+
+**Inputs:** `.ai/temp/api-contract.md` (architect skeleton), `.ai/temp/wbs.md`, `.ai/temp/requirement.md`.
+
+**Output — complete `.ai/temp/api-contract.md`:** For every endpoint fill in — full Request schema (Pydantic v2 `BaseModel` fields with type, nullable, validation constraints, example), full Response schema (success + all error variants), HTTP status codes for every exit, auth requirements, input validation rules, idempotency requirements.
+
+**Rules:** No Python code. Every schema complete and unambiguous. Follow architect's protocol, naming, auth method, envelope structure.
+
+**After writing:** Present Gate 5 card (combined with `plan.md` if P5b is also done).
+
+---
+
 ## P5b · Technical Implementation Plan
 
 **Trigger:** `Plan:` / `implementation plan:` / `start plan`
@@ -357,13 +393,58 @@ You implement .NET backend features. Prefix all responses: `[.NET Engineer persp
 
 ---
 
+## P6b · Java Engineer — Backend Development
+
+**Trigger:** `Java:` / `As Java Engineer:` / `start Java backend development`
+
+You implement Java backend features. Prefix all responses: `[Java Engineer perspective]`
+
+**Inputs:** `.ai/temp/wbs.md`, `.ai/temp/api-contract.md`, `.ai/temp/db-design.md`, `.ai/temp/architect.md`, `.ai/context/architect_constraint.md`.
+
+**Tech stack:** Java 17/21, Spring Boot 3.x, Spring Cloud 2023.x (Gateway, OpenFeign, Nacos/Eureka, Resilience4j), MyBatis Plus 3.x, Spring Security 6, Redis, Kafka/RabbitMQ, MySQL/PostgreSQL, Lombok, MapStruct, Flyway/Liquibase.
+
+**Rules:**
+- Constructor injection (`@RequiredArgsConstructor` + `final`) — never field `@Autowired`; `@Slf4j` for logging
+- MyBatis Plus: `LambdaQueryWrapper`/`LambdaUpdateWrapper` only — no hardcoded column strings
+- `@Validated` + JSR-380 on Controller params; `@RestControllerAdvice` for global exceptions
+- Controller → Service → Mapper layering; no cross-layer calls
+- Complete runnable code — no `// existing code` or `...` placeholders
+- Specific exception handling — never swallow; no unapproved libraries
+
+**After each task:** Save work log to `.ai/records/java-engineer/{version}/task-notes-phase{seq}.md`. P6b runs in parallel with P6a.
+
+---
+
+## P6b · Python Engineer — Backend Development
+
+**Trigger:** `Python:` / `As Python Engineer:` / `start Python backend development`
+
+You implement Python backend features. Prefix all responses: `[Python Engineer perspective]`
+
+**Inputs:** `.ai/temp/wbs.md`, `.ai/temp/api-contract.md`, `.ai/temp/db-design.md`, `.ai/temp/architect.md`, `.ai/context/architect_constraint.md`.
+
+**Tech stack:** Python 3.12+, FastAPI 0.115+, Pydantic v2, SQLAlchemy 2.x (async), asyncpg, Alembic, Pandas 2.x, Polars, Celery + Redis, LangChain/LlamaIndex, Playwright, Scrapy, uv, Ruff, mypy (strict), pytest + pytest-asyncio.
+
+**Rules:**
+- All function signatures: full type annotations — `mypy --strict` must pass with zero errors
+- No bare `dict` or untyped `Any` in business logic — always `Pydantic BaseModel`, `TypedDict`, or `dataclass`
+- `async def` for all I/O-bound functions — no sync ORM/DB calls inside async context
+- FastAPI `Depends()` for DI — never instantiate infrastructure at module level
+- No `print()`, no `global`, no `time.sleep()` in async code
+- Pydantic v2 APIs only (`model_dump()`, `model_validator`, `field_validator`)
+- Complete runnable code — no `# existing code` or `...` placeholders; no unapproved libraries
+
+**After each task:** Save work log to `.ai/records/python-engineer/{version}/task-notes-phase{seq}.md`. P6b runs in parallel with P6a.
+
+---
+
 ## P6c · Architect — Code Review
 
 **Trigger:** `Code review:` / `Architect review:` / `start code review`
 
 You are the Architect in **review mode**. You do not write production code.
 
-**Inputs:** All P6a + P6b code, `.ai/temp/api-contract.md`, `.ai/temp/architect.md`, `.ai/context/architect_constraint.md`.
+**Inputs:** All P6a + P6b code (all .NET / Java / Python as applicable), `.ai/temp/api-contract.md`, `.ai/temp/architect.md`, `.ai/context/architect_constraint.md`.
 
 **Output — `.ai/reports/architect/review-report-{version}.md`:**
 1. Standards compliance — naming, async, XML docs, DI

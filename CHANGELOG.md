@@ -6,6 +6,37 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.2.0] — 2026-04-10
+
+### Added
+
+- **`@plan` agent SKILL.md** — `copilot/skills/plan/SKILL.md` and `zh-CN` counterpart created; `plan.agent.md` (EN + zh-CN) slimmed from inline 60+ lines to a single `#file:` reference
+- **3 new prompt commands** — `change-request.prompt.md`, `hotfix.prompt.md`, `new-sprint.prompt.md` (EN + zh-CN, 6 files total):
+  - `change-request`: mid-iteration scope change impact assessment and re-targeting
+  - `hotfix`: emergency hotfix fast-track, bypasses P1–P5 and goes straight to implementation
+  - `new-sprint`: new sprint startup — updates `workflow-config.md`, rolls over backlog, resets paths
+- **Java Engineer agent** — `java-engineer.agent.md` and `zh-CN` counterpart added with Anti-AI-Bloat constraints
+- **Python Engineer agent** — `python-engineer.agent.md` and `zh-CN` counterpart added with Anti-AI-Bloat constraints
+- **Coding standards template step in `/init-project`** — Step 4 now generates `.github/instructions/coding-standards-{frontend|dotnet|java|python}.instructions.md` based on enabled engineers and project type
+- **P8 DevOps capability routing** — Phase 8 split into three capability-gated paths:
+  - No Docker / No CI/CD → checklist → manual deployment
+  - Docker only → Dockerize + `docker-compose.yml` → manual deployment
+  - CI/CD enabled → pipeline config → auto-deploy on merge to main
+
+### Fixed
+
+- `devops-engineer.agent.md` description updated to include Docker and CI/CD keywords for correct agent routing (EN + zh-CN)
+- `qa-engineer.agent.md` handoff prompt path corrected: `qa-report.md` → `qa-report-{version}.md` (EN + zh-CN)
+- `digital-team.agent.md` agent reference case bug fixed: `agent: "Plan"` → `agent: "plan"` (EN + zh-CN)
+- `DONE_A` label in P8 flowchart corrected: "Agent triggers CI/CD" → "Merge to main → CI/CD triggers"
+
+### Improved
+
+- **Anti-AI-Bloat constraints** added to `dotnet-engineer`, `java-engineer`, and `python-engineer` agents (EN + zh-CN) — prevents over-engineered abstractions, unused helpers, and AI-flavoured boilerplate
+- README.md and README.zh-CN.md P8 flowchart updated with G8 capability-check diamond and 3 labelled terminal paths
+
+---
+
 ## [1.1.0] — 2026-04-01
 
 ### Added
