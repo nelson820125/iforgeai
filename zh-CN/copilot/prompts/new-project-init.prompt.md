@@ -15,7 +15,15 @@ agent: "agent"
 创建以下目录（不存在时创建，已存在时跳过）：
 - `.ai/context/`
 - `.ai/records/`
+
+如果 AI 平台（Q0）为 **GitHub Copilot**（默认）：
 - `.github/instructions/`
+
+如果 AI 平台（Q0）为 **TraeCN**：
+- `.trae/rules/`
+  将仓库根目录 `trae/rules/` 中的相关 `coding-standards-*.md` 文件复制到 `.trae/rules/`，根据 Q2 项目类型和 Q5b 后端选择决定：
+  - 若项目包含前端，始终复制 `coding-standards-frontend.md`
+  - 复制所选后端规范：`coding-standards-dotnet.md` / `coding-standards-java.md` / `coding-standards-python.md`
 
 然后根据 Q9 的交付模式决定其他目录：
 - **`standard`**：另外创建 `.ai/temp/` 和 `.ai/reports/`
@@ -31,8 +39,10 @@ agent: "agent"
 ### A 组 — 项目基本信息
 
 如果 `{项目名称}` 和 `{项目类型}` 已通过参数传入，则确认后跳过前两题。
-
-> **Q1.** 项目名称是什么？
+> **Q0.** 本项目使用哪个 AI 平台？
+> 可选：`1` GitHub Copilot（VS Code）｛默认｝ / `2` TraeCN
+> *（占位値：`1`）*
+>> **Q1.** 项目名称是什么？
 > *（占位值：`my-project`）*
 >
 > **Q2.** 项目类型是什么？

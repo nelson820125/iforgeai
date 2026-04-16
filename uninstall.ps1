@@ -1,13 +1,20 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-    Uninstall iforgeAI from VS Code / GitHub Copilot.
+    Uninstall iforgeAI from VS Code / GitHub Copilot and/or Trae IDE.
 
 .DESCRIPTION
     Removes all agents, skills, instructions, and prompts installed by
-    install.ps1, and restores VS Code settings.json to its pre-install
-    state: if chat.pluginLocations existed before iforgeAI was installed,
-    the original value is restored; otherwise the key is removed entirely.
+    install.ps1, and restores VS Code settings.json to its pre-install state.
+
+    During the interactive session you will be asked which tool(s) to uninstall:
+      1. GitHub Copilot only  (default)
+      2. Trae only
+      3. Both
+
+    For Trae, you will also be asked which edition:
+      1. Trae CN  (default)
+      2. Trae International
 
     Supports Windows, macOS, and Linux.
 
@@ -38,7 +45,7 @@ if (-not (Get-Variable -Name 'IsWindows' -ErrorAction SilentlyContinue)) {
 # 1. Resolve paths
 # -----------------------------------------------------------------
 
-function Get-InstallPaths {
+function Get-CopilotInstallPaths {
     $homeDir = $HOME
 
     if ($IsWindows) {
@@ -76,7 +83,32 @@ function Get-InstallPaths {
     }
 }
 
-$paths = Get-InstallPaths
+function Get-TraeInstallPaths {
+    param([string]$Edition)
+
+    $homeDir = $HOME
+    $dirName = if ($Edition -eq 'cn') { '.trae-cn' } else { '.trae' }
+
+    if ($IsWindows) {
+        return [ordered]@{
+            SkillsDir       = Join-Path $homeDir "$dirName\skills"
+            InstructionsDir = Join-Path $homeDir "$dirName\instructions"
+        }
+    }
+    elseif ($IsMacOS) {
+        $appName = if ($Edition -eq 'cn') { 'trae-cn' } else { 'trae' }
+        return [ordered]@{
+            SkillsDir       = Join-Path $homeDir "Library/Application Support/$appName/skills"
+            InstructionsDir = Join-Path $homeDir "Library/Application Support/$appName/instructions"
+        }
+    }
+    else {
+        return [ordered]@{
+            SkillsDir       = Join-Path $homeDir "$dirName/skills"
+            InstructionsDir = Join-Path $homeDir "$dirName/instructions"
+        }
+    }
+}
 
 function Show-IforgeaiLogo {
     $logo = @(
@@ -186,18 +218,50 @@ function Remove-DirIfEmpty {
 }
 
 # -----------------------------------------------------------------
-# 4. Summary
+# 4. Interactive: tool selection
 # -----------------------------------------------------------------
 
 Write-Host ''
 Show-IforgeaiLogo
 Write-Host '  iforgeAI Uninstaller' -ForegroundColor Cyan
 Write-Host '  ------------------------------------------------------' -ForegroundColor DarkGray
-Write-Host "    Agents dir    : $($paths['AgentsDir'])"
-Write-Host "    Instructions  : $($paths['InstructionsDir'])"
-Write-Host "    Prompts       : $($paths['PromptsDir'])"
-Write-Host "    Skills        : $($paths['SkillsDir'])"
-Write-Host "    Settings      : $($paths['SettingsFile'])"
+Write-Host ''
+Write-Host '  Which tool(s) to uninstall?' -ForegroundColor Yellow
+Write-Host '    1   GitHub Copilot only  [default]'
+Write-Host '    2   Trae only'
+Write-Host '    3   Both'
+Write-Host ''
+$toolChoice     = Read-Host '  Select [Enter = 1]'
+$uninstallCopilot = $toolChoice -ne '2'
+$uninstallTrae    = $toolChoice -eq '2' -or $toolChoice -eq '3'
+
+$traeEdition = 'cn'
+if ($uninstallTrae) {
+    Write-Host ''
+    Write-Host '  Trae Edition:' -ForegroundColor Yellow
+    Write-Host '    1   Trae CN  [default]'
+    Write-Host '    2   Trae International'
+    Write-Host ''
+    $editionChoice = Read-Host '  Select [Enter = 1]'
+    $traeEdition   = if ($editionChoice -eq '2') { 'international' } else { 'cn' }
+}
+
+$copilotPaths = Get-CopilotInstallPaths
+$traePaths    = if ($uninstallTrae) { Get-TraeInstallPaths -Edition $traeEdition } else { $null }
+
+# --- Summary display
+Write-Host ''
+if ($uninstallCopilot) {
+    Write-Host "    Copilot Agents dir    : $($copilotPaths['AgentsDir'])"
+    Write-Host "    Copilot Instructions  : $($copilotPaths['InstructionsDir'])"
+    Write-Host "    Copilot Prompts       : $($copilotPaths['PromptsDir'])"
+    Write-Host "    Copilot Skills        : $($copilotPaths['SkillsDir'])"
+    Write-Host "    VS Code Settings      : $($copilotPaths['SettingsFile'])"
+}
+if ($uninstallTrae) {
+    Write-Host "    Trae Skills           : $($traePaths['SkillsDir'])"
+    Write-Host "    Trae Instructions     : $($traePaths['InstructionsDir'])"
+}
 Write-Host ''
 
 if ($DryRun) {
@@ -205,7 +269,7 @@ if ($DryRun) {
     Write-Host ''
 }
 else {
-    $confirm = Read-Host '  This will delete all iforgeAI agents, skills, instructions, and prompts. Continue? [y/N]'
+    $confirm = Read-Host '  This will delete all selected iforgeAI files. Continue? [y/N]'
     if ($confirm -notmatch '^[Yy]') {
         Write-Host '  Uninstall cancelled.' -ForegroundColor Yellow
         exit 0
@@ -213,125 +277,172 @@ else {
 }
 
 # -----------------------------------------------------------------
-# 5. Remove agents
+# 5. Remove Copilot agents
 # -----------------------------------------------------------------
 
-Write-Host ''
-Write-Host '  Removing agents...' -ForegroundColor Cyan
+if ($uninstallCopilot) {
+    Write-Host ''
+    Write-Host '  [Copilot] Removing agents...' -ForegroundColor Cyan
 
-foreach ($file in $agentFiles) {
-    Remove-InstalledFile -Path (Join-Path $paths['AgentsDir'] $file)
-}
-Remove-DirIfEmpty -Path $paths['AgentsDir']
-
-# -----------------------------------------------------------------
-# 6. Remove instructions
-# -----------------------------------------------------------------
-
-Write-Host ''
-Write-Host '  Removing instructions...' -ForegroundColor Cyan
-
-foreach ($file in $instructionFiles) {
-    Remove-InstalledFile -Path (Join-Path $paths['InstructionsDir'] $file)
-}
-Remove-DirIfEmpty -Path $paths['InstructionsDir']
-
-# -----------------------------------------------------------------
-# 7. Remove prompts
-# -----------------------------------------------------------------
-
-Write-Host ''
-Write-Host '  Removing prompts...' -ForegroundColor Cyan
-
-foreach ($file in $promptFiles) {
-    Remove-InstalledFile -Path (Join-Path $paths['PromptsDir'] $file)
-}
-Remove-DirIfEmpty -Path $paths['PromptsDir']
-
-# -----------------------------------------------------------------
-# 8. Remove skills
-# -----------------------------------------------------------------
-
-Write-Host ''
-Write-Host '  Removing skills...' -ForegroundColor Cyan
-
-foreach ($dir in $skillDirs) {
-    $skillFile = Join-Path (Join-Path $paths['SkillsDir'] $dir) 'SKILL.md'
-    Remove-InstalledFile -Path $skillFile
-    Remove-DirIfEmpty -Path (Join-Path $paths['SkillsDir'] $dir)
-}
-Remove-DirIfEmpty -Path $paths['SkillsDir']
-
-# -----------------------------------------------------------------
-# 9. Restore VS Code settings.json to pre-install state
-# -----------------------------------------------------------------
-
-Write-Host ''
-Write-Host '  Restoring VS Code settings...' -ForegroundColor Cyan
-
-$settingsFile = $paths['SettingsFile']
-$userDir      = $paths['UserDir']
-$backupFile   = Get-SettingsBackupFile -UserDir $userDir
-
-if (-not (Test-Path $settingsFile)) {
-    Write-Host "    SKIP  settings.json not found at $settingsFile" -ForegroundColor DarkGray
-}
-elseif ($DryRun) {
-    if (Test-Path $backupFile) {
-        $backup = Get-Content $backupFile -Raw | ConvertFrom-Json
-        if ($backup.existed) {
-            Write-Host '    [DRY] Would RESTORE original chat.pluginLocations (had other entries before install)' -ForegroundColor Magenta
-        }
-        else {
-            Write-Host '    [DRY] Would REMOVE chat.pluginLocations (was added fresh by iforgeAI)' -ForegroundColor Magenta
-        }
+    foreach ($file in $agentFiles) {
+        Remove-InstalledFile -Path (Join-Path $copilotPaths['AgentsDir'] $file)
     }
-    else {
-        Write-Host '    [DRY] Would remove chat.pluginLocations from settings.json (no backup found)' -ForegroundColor Magenta
-    }
+    Remove-DirIfEmpty -Path $copilotPaths['AgentsDir']
 }
-else {
-    $raw = [System.IO.File]::ReadAllText($settingsFile, [System.Text.Encoding]::UTF8)
 
-    if ($raw -notmatch 'chat\.pluginLocations') {
-        Write-Host '    SKIP  chat.pluginLocations not present in settings.json' -ForegroundColor DarkGray
+# -----------------------------------------------------------------
+# 6. Remove Copilot instructions
+# -----------------------------------------------------------------
+
+if ($uninstallCopilot) {
+    Write-Host ''
+    Write-Host '  [Copilot] Removing instructions...' -ForegroundColor Cyan
+
+    foreach ($file in $instructionFiles) {
+        Remove-InstalledFile -Path (Join-Path $copilotPaths['InstructionsDir'] $file)
     }
-    else {
+    Remove-DirIfEmpty -Path $copilotPaths['InstructionsDir']
+}
+
+# -----------------------------------------------------------------
+# 7. Remove Copilot prompts
+# -----------------------------------------------------------------
+
+if ($uninstallCopilot) {
+    Write-Host ''
+    Write-Host '  [Copilot] Removing prompts...' -ForegroundColor Cyan
+
+    foreach ($file in $promptFiles) {
+        Remove-InstalledFile -Path (Join-Path $copilotPaths['PromptsDir'] $file)
+    }
+    Remove-DirIfEmpty -Path $copilotPaths['PromptsDir']
+}
+
+# -----------------------------------------------------------------
+# 8. Remove Copilot skills
+# -----------------------------------------------------------------
+
+if ($uninstallCopilot) {
+    Write-Host ''
+    Write-Host '  [Copilot] Removing skills...' -ForegroundColor Cyan
+
+    foreach ($dir in $skillDirs) {
+        $skillFile = Join-Path (Join-Path $copilotPaths['SkillsDir'] $dir) 'SKILL.md'
+        Remove-InstalledFile -Path $skillFile
+        Remove-DirIfEmpty -Path (Join-Path $copilotPaths['SkillsDir'] $dir)
+    }
+    Remove-DirIfEmpty -Path $copilotPaths['SkillsDir']
+}
+
+# -----------------------------------------------------------------
+# 8b. Remove Trae skills
+# -----------------------------------------------------------------
+
+if ($uninstallTrae) {
+    Write-Host ''
+    Write-Host '  [Trae] Removing skills...' -ForegroundColor Cyan
+
+    # Remove all skill subdirectories installed by iforgeai (same list as Copilot + digital-team)
+    $traeSkillDirs = $skillDirs + @('digital-team')
+    foreach ($dir in $traeSkillDirs) {
+        $skillFile = Join-Path (Join-Path $traePaths['SkillsDir'] $dir) 'SKILL.md'
+        Remove-InstalledFile -Path $skillFile
+        Remove-DirIfEmpty -Path (Join-Path $traePaths['SkillsDir'] $dir)
+    }
+    Remove-DirIfEmpty -Path $traePaths['SkillsDir']
+}
+
+# -----------------------------------------------------------------
+# 8c. Remove Trae instructions
+# -----------------------------------------------------------------
+
+if ($uninstallTrae) {
+    Write-Host ''
+    Write-Host '  [Trae] Removing instructions...' -ForegroundColor Cyan
+
+    # Remove all coding-standards files installed for Trae
+    $traeInstrFiles = @(
+        'coding-standards-dotnet.instructions.md'
+        'coding-standards-frontend.instructions.md'
+        'coding-standards-java.instructions.md'
+        'coding-standards-python.instructions.md'
+        'output-standards.instructions.md'
+    )
+    foreach ($file in $traeInstrFiles) {
+        Remove-InstalledFile -Path (Join-Path $traePaths['InstructionsDir'] $file)
+    }
+    Remove-DirIfEmpty -Path $traePaths['InstructionsDir']
+}
+
+# -----------------------------------------------------------------
+# 9. Restore VS Code settings.json to pre-install state (Copilot only)
+# -----------------------------------------------------------------
+
+if ($uninstallCopilot) {
+    Write-Host ''
+    Write-Host '  [Copilot] Restoring VS Code settings...' -ForegroundColor Cyan
+
+    $settingsFile = $copilotPaths['SettingsFile']
+    $userDir      = $copilotPaths['UserDir']
+    $backupFile   = Get-SettingsBackupFile -UserDir $userDir
+
+    if (-not (Test-Path $settingsFile)) {
+        Write-Host "    SKIP  settings.json not found at $settingsFile" -ForegroundColor DarkGray
+    }
+    elseif ($DryRun) {
         if (Test-Path $backupFile) {
             $backup = Get-Content $backupFile -Raw | ConvertFrom-Json
-
             if ($backup.existed) {
-                # chat.pluginLocations existed before install -- restore the original block
-                $currentMatch = [regex]::Match($raw, '"chat\.pluginLocations"\s*:\s*\{[^}]*\}')
-                if ($currentMatch.Success) {
-                    $raw = $raw.Replace($currentMatch.Value, $backup.originalBlock)
-                    [System.IO.File]::WriteAllText($settingsFile, $raw, [System.Text.UTF8Encoding]::new($false))
-                    Write-Host '    OK    Restored original chat.pluginLocations' -ForegroundColor Green
-                }
-                else {
-                    Write-Host '    WARN  Could not locate chat.pluginLocations block to restore' -ForegroundColor Yellow
-                }
+                Write-Host '    [DRY] Would RESTORE original chat.pluginLocations (had other entries before install)' -ForegroundColor Magenta
             }
             else {
-                # chat.pluginLocations did not exist before install -- remove it entirely
+                Write-Host '    [DRY] Would REMOVE chat.pluginLocations (was added fresh by iforgeAI)' -ForegroundColor Magenta
+            }
+        }
+        else {
+            Write-Host '    [DRY] Would remove chat.pluginLocations from settings.json (no backup found)' -ForegroundColor Magenta
+        }
+    }
+    else {
+        $raw = [System.IO.File]::ReadAllText($settingsFile, [System.Text.Encoding]::UTF8)
+
+        if ($raw -notmatch 'chat\.pluginLocations') {
+            Write-Host '    SKIP  chat.pluginLocations not present in settings.json' -ForegroundColor DarkGray
+        }
+        else {
+            if (Test-Path $backupFile) {
+                $backup = Get-Content $backupFile -Raw | ConvertFrom-Json
+
+                if ($backup.existed) {
+                    $currentMatch = [regex]::Match($raw, '"chat\.pluginLocations"\s*:\s*\{[^}]*\}')
+                    if ($currentMatch.Success) {
+                        $raw = $raw.Replace($currentMatch.Value, $backup.originalBlock)
+                        [System.IO.File]::WriteAllText($settingsFile, $raw, [System.Text.UTF8Encoding]::new($false))
+                        Write-Host '    OK    Restored original chat.pluginLocations' -ForegroundColor Green
+                    }
+                    else {
+                        Write-Host '    WARN  Could not locate chat.pluginLocations block to restore' -ForegroundColor Yellow
+                    }
+                }
+                else {
+                    $cleaned = $raw -replace ',\s*"chat\.pluginLocations"\s*:\s*\{[^}]*\}', ''
+                    $cleaned = $cleaned -replace '"chat\.pluginLocations"\s*:\s*\{[^}]*\}\s*,?', ''
+                    $cleaned = $cleaned -replace ',(\s*\})', '$1'
+                    [System.IO.File]::WriteAllText($settingsFile, $cleaned, [System.Text.UTF8Encoding]::new($false))
+                    Write-Host '    OK    Removed chat.pluginLocations from settings.json' -ForegroundColor Green
+                }
+
+                Remove-Item $backupFile -Force
+                Write-Host "    OK    Removed backup file $(Split-Path $backupFile -Leaf)" -ForegroundColor Green
+            }
+            else {
+                Write-Host '    WARN  No backup file found; removing entire chat.pluginLocations block' -ForegroundColor Yellow
                 $cleaned = $raw -replace ',\s*"chat\.pluginLocations"\s*:\s*\{[^}]*\}', ''
                 $cleaned = $cleaned -replace '"chat\.pluginLocations"\s*:\s*\{[^}]*\}\s*,?', ''
                 $cleaned = $cleaned -replace ',(\s*\})', '$1'
                 [System.IO.File]::WriteAllText($settingsFile, $cleaned, [System.Text.UTF8Encoding]::new($false))
                 Write-Host '    OK    Removed chat.pluginLocations from settings.json' -ForegroundColor Green
             }
-
-            Remove-Item $backupFile -Force
-            Write-Host "    OK    Removed backup file $(Split-Path $backupFile -Leaf)" -ForegroundColor Green
-        }
-        else {
-            # No backup file -- fall back to removing the entire block, warn the user
-            Write-Host '    WARN  No backup file found; removing entire chat.pluginLocations block' -ForegroundColor Yellow
-            $cleaned = $raw -replace ',\s*"chat\.pluginLocations"\s*:\s*\{[^}]*\}', ''
-            $cleaned = $cleaned -replace '"chat\.pluginLocations"\s*:\s*\{[^}]*\}\s*,?', ''
-            $cleaned = $cleaned -replace ',(\s*\})', '$1'
-            [System.IO.File]::WriteAllText($settingsFile, $cleaned, [System.Text.UTF8Encoding]::new($false))
-            Write-Host '    OK    Removed chat.pluginLocations from settings.json' -ForegroundColor Green
         }
     }
 }
@@ -349,7 +460,12 @@ if ($DryRun) {
 else {
     Write-Host "  Uninstall complete.  $removed removed,  $notFound already absent." -ForegroundColor Green
     Write-Host ''
-    Write-Host '  Reload VS Code to apply:  Ctrl+Shift+P  ->  Developer: Reload Window' -ForegroundColor Cyan
+    if ($uninstallCopilot) {
+        Write-Host '  Reload VS Code to apply:  Ctrl+Shift+P  ->  Developer: Reload Window' -ForegroundColor Cyan
+    }
+    if ($uninstallTrae) {
+        Write-Host '  Restart Trae IDE to apply the changes.' -ForegroundColor Cyan
+    }
 }
 
 Write-Host ''

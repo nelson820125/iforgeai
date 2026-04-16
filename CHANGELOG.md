@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.3.0] — 2026-04-16
+
+### Added
+
+- **Trae Agents integration** — all 13 specialist agents (digital-team, product-manager, architect, dba, ui-designer, project-manager, plan, frontend-engineer, dotnet-engineer, java-engineer, python-engineer, qa-engineer, devops-engineer) are now available as one-click shared agents for Trae CN via `https://s.trae.com.cn/a/{hash}?region=cn` links
+- **Trae install support in `install.ps1`** — unified installer now supports platform selection: `1` Copilot, `2` Trae, `3` Both; installs role skills to `~/.trae-cn/skills/` (Trae CN) or `~/.trae/skills/` (Trae International) and coding standards to the corresponding `instructions/` directory
+- **`/init-project` command for Trae** — `@digital-team /init-project` guides users through a scaffold interview in Trae chat, creating `.ai/context/workflow-config.md` and copying relevant coding standards into `.trae/rules/`
+
+---
+
 ## [1.2.0] — 2026-04-10
 
 ### Added

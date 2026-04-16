@@ -2,19 +2,20 @@
   <img src="public/assets/logo.png" width="300" alt="logo" />
 </p>
 
-[![VS Code](https://img.shields.io/badge/VS%20Code-1.99%2B-0078d4?logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/) [![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-supported-000000?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot) [![Claude Code](https://img.shields.io/badge/Claude_Code-supported-CC785C?logo=anthropic&logoColor=white)](https://www.anthropic.com/claude-code) [![Codex CLI](https://img.shields.io/badge/Codex_CLI-supported-412991?logo=openai&logoColor=white)](https://github.com/openai/codex) [![DevOps Docker Capability](https://img.shields.io/badge/DevOps-Docker%20Capability-2496ED?logo=docker&logoColor=white)](https://www.docker.com/) [![DevOps CI/CD Capability](https://img.shields.io/badge/DevOps-CI%2FCD%20Capability-0A66C2?logo=githubactions&logoColor=white)](https://github.com/features/actions) [![Version](https://img.shields.io/badge/version-v1.1.0-blue)](CHANGELOG.md)
+[![VS Code](https://img.shields.io/badge/VS%20Code-1.99%2B-0078d4?logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/) [![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-supported-000000?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot) [![Claude Code](https://img.shields.io/badge/Claude_Code-supported-CC785C?logo=anthropic&logoColor=white)](https://www.anthropic.com/claude-code) [![Codex CLI](https://img.shields.io/badge/Codex_CLI-supported-412991?logo=openai&logoColor=white)](https://github.com/openai/codex) [![Trae](https://img.shields.io/badge/Trae-0.6.0%2B-FF6B35?logoColor=white)](https://www.trae.ai/) [![DevOps Docker Capability](https://img.shields.io/badge/DevOps-Docker%20Capability-2496ED?logo=docker&logoColor=white)](https://www.docker.com/) [![DevOps CI/CD Capability](https://img.shields.io/badge/DevOps-CI%2FCD%20Capability-0A66C2?logo=githubactions&logoColor=white)](https://github.com/features/actions) [![Version](https://img.shields.io/badge/version-v1.1.0-blue)](CHANGELOG.md)
 
 ![Vue](https://img.shields.io/badge/Vue_3-4FC08D?logo=vuedotjs&logoColor=white) ![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white) ![.NET](https://img.shields.io/badge/.NET-512BD4?logo=dotnet&logoColor=white) ![Java](https://img.shields.io/badge/Java-ED8B00?logo=openjdk&logoColor=white) ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?logo=springboot&logoColor=white) ![Spring Cloud](https://img.shields.io/badge/Spring_Cloud-6DB33F?logo=spring&logoColor=white) ![MyBatis](https://img.shields.io/badge/MyBatis-C71A36?logo=mybatis&logoColor=white) ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white) ![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white) ![SQL Server](https://img.shields.io/badge/SQL_Server-CC2927?logo=microsoftsqlserver&logoColor=white) ![MySQL](https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white) ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white) ![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white) ![and more](https://img.shields.io/badge/&_more...-lightgrey)
 
 [中文](README.zh-CN.md)
 
-A structured AI agent toolkit for GitHub Copilot, designed for software delivery teams.
+A multi-platform, multi-role AI agent toolkit for software delivery teams.  
+Supports **GitHub Copilot**, **Claude Code**, **Codex CLI**, and **TraeCN**.
 
 by [jordium.com](https://jordium.com)
 
 ---
 
-iforgeAI provides 10 specialist AI agents for GitHub Copilot — one per delivery role. Each agent has defined inputs, outputs, and handoff points. A coordinator agent (`@digital-team`) connects them into a sequential workflow with human gate reviews between phases.
+iforgeAI provides 10 specialist AI agents — one per delivery role. Each agent has defined inputs, outputs, and handoff points. A coordinator agent (`@digital-team`) connects them into a sequential workflow with human gate reviews between phases.
 
 To avoid conflicts with existing products using similar names in the market, the project has been renamed from `forgeai` to `iforgeAI`.
 
@@ -22,10 +23,110 @@ Backend support: .NET (C#), Java (Spring Boot), and Python (FastAPI). Multiple b
 
 The DevOps role includes Docker configuration and CI/CD pipeline delivery capabilities, and generates these artifacts on demand based on the `docker` and `cicd` settings in `.ai/context/workflow-config.md`.
 
-Adapters for Claude Code and OpenAI Codex CLI are also available. See [Claude Code & Codex CLI](#claude-code--codex-cli) below.
-
 VS Code 1.115.0 supports a visual Prompt UI for project initialization, making configuration easier.
 ![Prompt UI](public/assets/prompt-ui.png)
+
+---
+
+## Quick Start
+
+### GitHub Copilot
+
+```sh
+git clone https://github.com/nelson820125/iforgeai.git
+cd iforgeai
+pwsh ./install.ps1          # Select platform: 1 Copilot  (or 3 Both)
+```
+
+Then in VS Code:
+1. `Ctrl+Shift+P` → **Developer: Reload Window**
+2. Open your project workspace
+3. Copilot Chat → run `/init-project` to scaffold `.ai/` directories
+4. Switch to Agent mode → select `digital-team` → describe your iteration goal
+
+![iforgeAI on VS Code - Agent picker](public/assets/VSCode-1.png)
+
+![iforgeAI on VS Code - Chat](public/assets/VSCode-2.png)
+
+---
+
+### Trae (0.6.0+)
+
+**Method 1 — Script install (recommended)**
+
+```sh
+git clone https://github.com/nelson820125/iforgeai.git
+cd iforgeai
+pwsh ./install.ps1          # Select platform: 2 Trae  (or 3 Both)
+```
+
+This installs all role skills globally to `~/.trae-cn/skills/` (Trae CN) or `~/.trae/skills/` (Trae International), and coding-standard instructions to the corresponding `instructions/` directory.
+
+After installation, invoke any role in Trae chat using `@agent-name`:
+
+```
+@digital-team      — coordinator; use /init-project to scaffold a new project
+@product-manager   — requirements analysis
+@architect         — architecture design
+@dba               — database design
+```
+
+**Method 2 — One-click shared agents** *(Trae CN only)*
+
+Click to add an agent directly to your Trae workspace (no install required):
+
+| Agent | Link |
+|---|---|
+| digital-team (coordinator) | [Add agent](https://s.trae.com.cn/a/20b610?region=cn) |
+| product-manager | [Add agent](https://s.trae.com.cn/a/0774f5?region=cn) |
+| project-manager | [Add agent](https://s.trae.com.cn/a/a47648?region=cn) |
+| architect | [Add agent](https://s.trae.com.cn/a/2215d0?region=cn) |
+| dba | [Add agent](https://s.trae.com.cn/a/15f783?region=cn) |
+| ui-designer | [Add agent](https://s.trae.com.cn/a/9d7e92?region=cn) |
+| frontend-engineer | [Add agent](https://s.trae.com.cn/a/211c10?region=cn) |
+| dotnet-engineer | [Add agent](https://s.trae.com.cn/a/637798?region=cn) |
+| java-engineer | [Add agent](https://s.trae.com.cn/a/37cb8a?region=cn) |
+| python-engineer | [Add agent](https://s.trae.com.cn/a/8c1a62?region=cn) |
+| qa-engineer | [Add agent](https://s.trae.com.cn/a/122a53?region=cn) |
+| plan | [Add agent](https://s.trae.com.cn/a/1e717a?region=cn) |
+| devops-engineer | [Add agent](https://s.trae.com.cn/a/121c87?region=cn) |
+
+**Initialize a project**
+
+In Trae chat, use `@digital-team` and run `/init-project` to scaffold `.ai/` directories for your project:
+
+```
+@digital-team /init-project
+```
+
+The guided interview creates `.ai/context/workflow-config.md` and copies relevant coding standards from the global instructions into `.trae/rules/`.
+
+![iforgeAI on Trae - Agent list](public/assets/Trae-1.png)
+
+![iforgeAI on Trae - Chat](public/assets/Trae-2.png)
+
+![iforgeAI on Trae - Init project](public/assets/Trae-3.png)
+
+---
+
+### Claude Code
+
+```sh
+# Copy to your project root (or ~/.claude/ for all projects)
+cp claude-code/CLAUDE.md /path/to/your/project/CLAUDE.md
+```
+
+Start with a trigger word in Claude Code chat: `PM:` / `Architect:` / `Frontend:` …
+
+---
+
+### Codex CLI
+
+```sh
+cp codex/AGENTS.md /path/to/your/project/AGENTS.md
+```
+
+> For Chinese versions, use `zh-CN/` prefix: `zh-CN/claude-code/CLAUDE.md`, `zh-CN/codex/AGENTS.md`.
 
 ---
 
@@ -305,7 +406,7 @@ iforgeAI installs in **English by default**. The output language of agent-genera
 A full Simplified Chinese locale is available in the `zh-CN/` directory — all agent and skill files are in Chinese:
 
 ```sh
-pwsh ./zh-CN/install.ps1
+pwsh ./install.ps1    # Select language: zh-CN during install
 ```
 
 This installs the same components from the `zh-CN/copilot/` source tree.
@@ -556,7 +657,6 @@ iforgeai/
 ├── install.ps1
 ├── uninstall.ps1
 ├── zh-CN/                     Simplified Chinese locale
-│   ├── install.ps1
 │   └── copilot/               Chinese versions of agents, skills, instructions, and prompts
 ├── shared/                    Platform-agnostic role and standard definitions
 │   ├── roles/

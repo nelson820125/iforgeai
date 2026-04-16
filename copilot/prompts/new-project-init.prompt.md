@@ -15,7 +15,15 @@ Work through the steps below in order. Do **not** skip the guided interview — 
 Create the following directories (create if absent, skip if already exists):
 - `.ai/context/`
 - `.ai/records/`
+
+If the AI platform (Q0) is **GitHub Copilot** (default):
 - `.github/instructions/`
+
+If the AI platform (Q0) is **TraeCN**:
+- `.trae/rules/`
+  Then copy the relevant `coding-standards-*.md` files from `trae/rules/` (repo root) into `.trae/rules/` based on Q2 project type and Q5b backend selection:
+  - Always copy `coding-standards-frontend.md` if project includes frontend
+  - Copy the selected backend standard(s): `coding-standards-dotnet.md` / `coding-standards-java.md` / `coding-standards-python.md`
 
 Then, based on the delivery mode from Q9:
 - **`standard`**: also create `.ai/temp/` and `.ai/reports/`
@@ -31,6 +39,10 @@ Ask the user the questions below **one group at a time**. Wait for a response be
 
 If `{project-name}` and `{project-type}` were already supplied as arguments, confirm them and skip the first two questions.
 
+> **Q0.** Which AI platform are you using for this project?
+> Options: `1` GitHub Copilot (VS Code) [default] / `2` TraeCN
+> *(placeholder: `1`)*
+>
 > **Q1.** What is the project name?
 > *(placeholder: `my-project`)*
 >
