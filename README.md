@@ -13,9 +13,11 @@ Supports **GitHub Copilot**, **Claude Code**, **Codex CLI**, and **TraeCN**.
 
 by [jordium.com](https://jordium.com)
 
+![Picture](public/assets/iforgeAI.png)
+
 ---
 
-iforgeAI provides 10 specialist AI agents — one per delivery role. Each agent has defined inputs, outputs, and handoff points. A coordinator agent (`@digital-team`) connects them into a sequential workflow with human gate reviews between phases.
+iforgeAI provides 13 specialist AI agents — one per delivery role. Each agent has defined inputs, outputs, and handoff points. A coordinator agent (`@digital-team`) connects them into a sequential workflow with human gate reviews between phases.
 
 To avoid conflicts with existing products using similar names in the market, the project has been renamed from `forgeai` to `iforgeAI`.
 

@@ -12,9 +12,11 @@
 
 by [jordium.com](https://jordium.com)
 
+![Picture](public/assets/iforgeAI.png)
+
 ---
 
-iforgeAI 提供 10 个专业 AI Agent，每个 Agent 对应一个交付角色，拥有明确的输入、输出和移交协议。协调者 Agent（`@digital-team`）将它们串联成顺序工作流，每个阶段之间设置人工门控审批。
+iforgeAI 提供 13 个专业 AI Agent，每个 Agent 对应一个交付角色，拥有明确的输入、输出和移交协议。协调者 Agent（`@digital-team`）将它们串联成顺序工作流，每个阶段之间设置人工门控审批。
 
 为避免与市场上已有产品名称重复，项目已由 `forgeai` 更名为 `iforgeAI`。
 
